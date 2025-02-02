@@ -1,0 +1,78 @@
+/* Tambahkan border pada login-container */
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px; /* Bisa disesuaikan */
+    border: 2px solid #ced4da; /* Warna border agar sama dengan register */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Divider "or" tetap seperti di register */
+.divider-with-text {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 40%;
+    margin: 0 auto;
+}
+
+.divider-with-text::before,
+.divider-with-text::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ced4da;
+    margin: 0 10px;
+}
+
+.divider-with-text span {
+    padding: 0 10px;
+    color: #6c757d;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* Tombol login */
+.m-btn-login {
+    background-color: #232E66 !important;
+    height: 50px !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.m-btn-login:hover {
+    background-color: #1a2250 !important; /* Warna sedikit lebih gelap saat hover */
+    cursor: pointer !important;
+}
+
+/* Style tombol Google login */
+.btn-google {
+    border: 1px solid #ced4da;
+    background-color: white;
+    color: #6c757d;
+}
+
+.btn-google:hover {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+/* Text hyperlink Sign Up */
+.text-signup a {
+    color: #232E66;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.text-signup a:hover {
+    text-decoration: underline;
+}
+
+/* Style untuk gambar login */
+.login-image {
+    border-top-right-radius: 50px;  /* Melengkung di sudut kanan atas */
+    border-bottom-right-radius: 50px; /* Melengkung di sudut kanan bawah */
+    object-fit: cover; /* Pastikan gambar tidak terdistorsi */
+    height: 100vh; /* Pastikan gambar memenuhi tinggi layar */
+    width: 100%; /* Pastikan gambar memenuhi lebar kolom */
+}
+
