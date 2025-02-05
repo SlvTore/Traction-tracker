@@ -21,8 +21,8 @@ class RolesSeeder extends Seeder
                 'status' => 1, // 1 = aktif
                 'created_at' => now(),
                 'created_id' => 1, // Misal ID admin pertama
-                'update_at' => now(),
-                'update_id' => 1,
+                'updated_at' => now(),
+                'updated_id' => 1,
             ],
             [
                 'name' => 'Test Kedua',
@@ -30,8 +30,8 @@ class RolesSeeder extends Seeder
                 'status' => 1, // 1 = aktif
                 'created_at' => now(),
                 'created_id' => 1,
-                'update_at' => now(),
-                'update_id' => 1,
+                'updated_at' => now(),
+                'updated_id' => 1,
             ]
         ]);
     }
