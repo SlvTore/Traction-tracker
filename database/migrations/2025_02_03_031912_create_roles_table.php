@@ -21,7 +21,7 @@ class CreateRolesTable extends Migration
             $table->timestamp('created_at')->nullable();
             $table->unsignedBigInteger('created_id')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->unsignedBigInteger('update_id')->nullable();
+            $table->unsignedBigInteger('updated_id')->nullable();
         });
     }
 
