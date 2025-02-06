@@ -19,19 +19,18 @@
             <div class="row">
                 <div class="col-lg-12 p-0 bg-wrapper">
                         <div class="row justify-content-end">
-                            <div class="register-form col-lg-6 d-flex align-items-center">
+                            <div class="register-form col-lg-6 d-flex align-items-center p-3 ">
                                 <div class="container">
-                                    <div class="d-flex justify-content-end">
+                                    <div class="logo d-flex justify-content-end">
                                         <img src="{{ asset('images/Maxy-Logo.png') }}" alt="Logo" class="img-fluid mt-4" style="width: 100px; height: auto;">
                                     </div>
                                     <div class="row justify-content-center">
                                         <div class="col-md-10">
                                             <div class="text-center mb-4">
-                                                <x-auth-validation-errors class="mb-4" :errors="$errors" />
                                             </div>
-                                            <div class="text-center mb-5">
+                                            <div class="text-center mb-3">
                                                 <h1 class="fw-bold">Create an Account</h1>
-                                                <p class="lead">Are you ready to join us! component variant main layer. Pixel strikethrough style text</p>
+                                                <p class="lead">Are you ready to join us! component variant main layer. Pixel strike-through style text</p>
                                             </div>
                                             <form method="POST" action="{{ route('register') }}">
                                                 @csrf
@@ -52,16 +51,10 @@
                                                     <label for="password_confirmation" class="form-label">Confirm Password</label>
                                                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
                                                 </div>
+                                                <!-- Validation Errors -->
+                                                <x-auth-registration-errors  :errors="$errors" />
                                                 <div class="mb-3">
                                                     <button type="submit" class="m-btn-register btn w-100 text-white fw-bold">Register</button>
-                                                </div>
-                                                <div class="divider-with-text mb-3">
-                                                    <span>or</span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <button type="button" class="btn btn-outline-secondary w-100">
-                                                        <i class="fab fa-google"></i> Sign up with Google
-                                                    </button>
                                                 </div>
                                                 <p class="text-center">Already have an account? <a href="{{ route('login') }}">Log-in</a></p>
                                             </form>
