@@ -8,6 +8,13 @@ body {
     padding: 0;
 }
 
+@media (max-width: 768px) {
+    body {
+        background-image: none !important;
+        background-color: white !important;
+    }
+}
+
 /* Remove or comment out the .bg-image class since we're not using it anymore */
 /* .bg-image {
     position: absolute;
