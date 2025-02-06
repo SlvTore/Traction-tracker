@@ -17,7 +17,7 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12 p-0">
+                <div class="col-lg-12 p-0 bg-wrapper">
                         <div class="row justify-content-end">
                             <div class="register-form col-lg-6 d-flex align-items-center">
                                 <div class="container">

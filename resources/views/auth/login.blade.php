@@ -17,8 +17,8 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-7 d-flex align-items-center">
-                    <div class="container">
+                <div class="col-lg-6 d-flex align-items-center p-0">
+                    <div class="container login-form">
                         <div class="d-flex justify-content-start">
                             <img src="{{ asset('images/Maxy-Logo.png') }}" alt="Logo" class="img-fluid mt-4" style="width: 100px; height: auto;">
                         </div>
@@ -59,9 +59,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-5 p-0">
-                    <img src="{{ asset('images/login-bg.png') }}" alt="Login-bg" class="img-fluid login-image">
-                </div>                
             </div>
         </div>
     </body>

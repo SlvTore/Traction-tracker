@@ -1,10 +1,22 @@
-/* Tambahkan border pada login-container */
-.login-container {
+
+.login-form {
+    position: relative;
+    z-index: 1;
     background: white;
-    padding: 40px;
-    border-radius: 20px; /* Bisa disesuaikan */
-    border: 2px solid #ced4da; /* Warna border agar sama dengan register */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border-radius: 0px 75px 75px 0;
+}
+
+
+body {
+    background-image: url('../images/login-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 /* Divider "or" tetap seperti di register */
