@@ -1,4 +1,55 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav class="navbar navbar-expand-lg navbar-light bg-white h-100">
+    <div class="container-fluid d-flex flex-column h-100">
+        <!-- Top Section (Logo & Nav Links) -->
+        <div class="d-flex flex-column align-items-start w-100">
+            <!-- Brand -->
+            <a class="navbar-brand mb-4" href="{{ route('dashboard') }}">
+                <x-application-logo class="w-20 h-20" />
+            </a>
+
+            <!-- Navigation Items -->
+            <div class="collapse navbar-collapse w-100" id="navbarNav">
+                <ul class="navbar-nav flex-column w-100 gap-2">
+                    <li class="nav-item">
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="nav-link px-0">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    </li>
+                    <li class="nav-item">
+                        <x-nav-link :href="route('metrics')" :active="request()->routeIs('metrics')" class="nav-link px-0">
+                            {{ __('Metrics') }}
+                        </x-nav-link>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Section (User Dropdown) -->
+        <div class="mt-auto w-100">
+            <div class="dropdown w-100">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    {{ Auth::user()->name }}
+                </a>
+                <ul class="dropdown-menu w-100">
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                {{ __('Log Out') }}
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="navbar-toggler position-absolute top-0 end-0 mt-2 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+{{-- <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -90,3 +141,4 @@
         </div>
     </div>
 </nav>
+ --}}

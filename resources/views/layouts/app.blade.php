@@ -15,22 +15,37 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+    <body class="">
+        <div class="container-fluid">
+            <div class="row min-vh-100">
+                <!-- Left Sidebar Navigation -->
+                <div class="col-lg-3 bg-white shadow-sm p-0">
+                    @include('layouts.navigation')
                 </div>
-            </header>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Right Content Area -->
+                <div class="col-lg-9 bg-light">
+                    <!-- Page Heading -->
+                    <header class="bg-white shadow-sm mb-4">
+                        <div class="container-fluid py-3">
+                            {{ $header }}
+                        </div>
+                    </header>
+
+                     <!-- Page Content -->
+                     <main class="py-4">
+                        <div class="container-fluid">
+                            {{ $slot }}
+                        </div>
+                    </main>
+                </div>
+            </div>
         </div>
     </body>
 </html>
