@@ -9,7 +9,7 @@ body {
     overflow-x: hidden;
 }
 
-@media (max-width: 768px) {
+@media  (max-width: 1024px) and (orientation: portrait), (max-width: 768px) {
     body {
         background-image: none !important;
         background-color: white !important;
@@ -36,10 +36,7 @@ body {
     max-width: 100%;
 }
 
-.logo {
-    z-index: 1;
-    width: 100px;
-}
+
 
 
 .m-btn-register {

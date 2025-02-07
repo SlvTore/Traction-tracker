@@ -17,54 +17,54 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12 p-0 bg-wrapper">
-                        <div class="row justify-content-end">
-                            <div class="register-form col-lg-6 d-flex align-items-center p-3 ">
-                                <div class="container">
-                                    <div class="logo d-flex justify-content-end">
-                                        <img src="{{ asset('images/Maxy-Logo.png') }}" alt="Logo" class="img-fluid mt-4" style="width: 100px; height: auto;">
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-10">
-                                            <div class="text-center mb-4">
-                                            </div>
-                                            <div class="text-center mb-3">
-                                                <h1 class="fw-bold">Create an Account</h1>
-                                                <p class="lead">Are you ready to join us! component variant main layer. Pixel strike-through style text</p>
-                                            </div>
-                                            <form method="POST" action="{{ route('register') }}">
-                                                @csrf
-                                                <div class="mb-3">
-                                                    <label for="name" class="form-label">Name</label>
-                                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="{{ old('name') }}" required autofocus>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
-                                                    <div class="email-text form-text"> We'll never share your email with anyone else.</div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="password" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="new-password">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
-                                                </div>
-                                                <!-- Validation Errors -->
-                                                <x-auth-registration-errors  :errors="$errors" />
-                                                <div class="mb-3">
-                                                    <button type="submit" class="m-btn-register btn w-100 text-white fw-bold">Register</button>
-                                                </div>
-                                                <p class="text-center">Already have an account? <a href="{{ route('login') }}">Log-in</a></p>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="col-lg-12 p-0 bg-wrapper">
+                <div class="row justify-content-end">
+                    <div class="register-form col-lg-6 d-flex align-items-center p-3 ">
+                    <div class="container">
+                        <div class="d-flex justify-content-end mt-1">
+                        <img src="{{ asset('images/Maxy-Logo.png') }}" alt="Logo" class="img-fluid mt-1" style="width: 100px; height: auto;">
+                        </div>
+                        <div class="row justify-content-center">
+                        <div class="col-md-10">
+                            <div class="text-center mb-4">
                             </div>
+                            <div class="text-center mb-3">
+                            <h2 class="fw-bold">Create an Account</h2>
+                            <p class="lead">Are you ready to join us! component variant main layer. Pixel strike-through style text</p>
+                            </div>
+                            <form method="POST" action="{{ route('register') }}">
+                            @csrf
+                            <div class="mb-2">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="{{ old('name') }}" required autofocus>
+                            </div>
+                            <div class="mb-2">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+                                <div class="email-text form-text"> We'll never share your email with anyone else.</div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="new-password">
+                            </div>
+                            <div class="mb-2">
+                                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
+                            </div>
+                            <!-- Validation Errors -->
+                            <x-auth-registration-errors  :errors="$errors" />
+                            <div class="mb-2">
+                                <button type="submit" class="m-btn-register btn w-100 text-white fw-bold">Register</button>
+                            </div>
+                            <p class="text-center">Already have an account? <a href="{{ route('login') }}">Log-in</a></p>
+                            </form>
+                        </div>
                         </div>
                     </div>
+                    </div>
                 </div>
+                </div>
+            </div>
             </div>
         </div>
     </body>

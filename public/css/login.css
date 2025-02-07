@@ -19,30 +19,6 @@ body {
     position: relative;
 }
 
-/* Divider "or" tetap seperti di register */
-.divider-with-text {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    width: 40%;
-    margin: 0 auto;
-}
-
-.divider-with-text::before,
-.divider-with-text::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #ced4da;
-    margin: 0 10px;
-}
-
-.divider-with-text span {
-    padding: 0 10px;
-    color: #6c757d;
-    font-size: 0.9em;
-    white-space: nowrap;
-}
-
 /* Tombol login */
 .m-btn-login {
     background-color: #232E66 !important;
@@ -56,17 +32,7 @@ body {
     cursor: pointer !important;
 }
 
-/* Style tombol Google login */
-.btn-google {
-    border: 1px solid #ced4da;
-    background-color: white;
-    color: #6c757d;
-}
 
-.btn-google:hover {
-    background-color: #f8f9fa;
-    color: #343a40;
-}
 
 /* Text hyperlink Sign Up */
 .text-signup a {
@@ -80,11 +46,10 @@ body {
 }
 
 /* Style untuk gambar login */
-.login-image {
-    border-top-right-radius: 50px;  /* Melengkung di sudut kanan atas */
-    border-bottom-right-radius: 50px; /* Melengkung di sudut kanan bawah */
-    object-fit: cover; /* Pastikan gambar tidak terdistorsi */
-    height: 100vh; /* Pastikan gambar memenuhi tinggi layar */
-    width: 100%; /* Pastikan gambar memenuhi lebar kolom */
+@media  (max-width: 1024px) and (orientation: portrait), (max-width: 768px) {
+    body {
+        background-image: none !important;
+        background-color: white !important;
+    }
 }
 
