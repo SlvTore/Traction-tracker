@@ -3,7 +3,7 @@
     position: relative;
     z-index: 1;
     background: white;
-    padding: 31px;
+    height: 100vh;
     border-radius: 0px 75px 75px 0;
 }
 
@@ -17,6 +17,7 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
+    overflow: hidden;
 }
 
 /* Tombol login */
