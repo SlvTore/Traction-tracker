@@ -29,6 +29,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/metrics', function () {
         return view('metrics');
     })->name('metrics');
+
+    Route::get('/data', function () {
+        return view('data');
+    })->name('data');
+
+    Route::get('/user', function () {
+        return view('user');
+    })->name('user');
+
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings');
+
+    Route::get('/help', function () {
+        return view('help');
+    })->name('help');
+
+    Route::get('/notifications', function () {
+        return view('notifications');
+    })->name('notifications');
+    
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -34,23 +34,20 @@
                             </div>
                             <form method="POST" action="{{ route('register') }}">
                             @csrf
-                            <div class="mb-2">
+                            <div class="mb-1">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="{{ old('name') }}" required autofocus>
                             </div>
-                            <div class="mb-2">
+                            <div class="mb-1">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
                                 <div class="email-text form-text"> We'll never share your email with anyone else.</div>
                             </div>
-                            <div class="mb-2">
+                            <div class="mb-1">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="new-password">
                             </div>
-                            <div class="mb-2">
-                                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
-                            </div>
+                        
                             <!-- Validation Errors -->
                             <x-auth-registration-errors  :errors="$errors" />
                             <div class="mb-2">

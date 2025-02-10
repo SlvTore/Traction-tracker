@@ -18,13 +18,13 @@
                     <button type="button" class="btn-close" onclick="this.closest('.alert').remove()" aria-label="Close"></button>
                 </div>
             @else
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{-- <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>{{ $error }}</strong>
                     </div>
                     <button type="button" class="btn-close" onclick="this.closest('.alert').remove()" aria-label="Close"></button>
-                </div>
+                </div> --}}
             @endif
         @endforeach
     </div>
