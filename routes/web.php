@@ -13,21 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
-
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return view('dashboard-main.index');
     })->name('dashboard');
 
     Route::get('/metrics', function () {
-        return view('metrics');
+        return view('dashboard-metrics.index');
     })->name('metrics');
 
     Route::get('/data', function () {
@@ -49,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', function () {
         return view('notifications');
     })->name('notifications');
-    
+
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     });

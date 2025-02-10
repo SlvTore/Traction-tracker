@@ -1,10 +1,14 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="h4">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('title', 'Dashboard')
+
+@section('content_header')
+    <h2 class="h4">
+        {{ __('Dashboard') }}
+    </h2>
+@endsection
+
+@section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -18,9 +22,7 @@
 
                             </div>
                             <div class="col-md-4">
-                                <div class="col-md-4">
-                                    <input type="date" class="form-control rounded" id="datepicker" name="datepicker">
-                                </div>
+                                <input type="date" class="form-control rounded" id="datepicker" name="datepicker">
                             </div>
                         </div>
                     </div>
@@ -28,4 +30,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
