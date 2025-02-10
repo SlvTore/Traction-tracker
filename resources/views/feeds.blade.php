@@ -1,13 +1,11 @@
-
 <x-app-layout>
     <x-slot name="header">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
                     <h2 class="h4">
-                        {{ __('Metrics') }}
+                        {{ __('Data Feeds') }}
                     </h2>
-                    <h3>Transaction</h3>
                 </div>
 
                 <div class="col-lg-4">
@@ -64,21 +62,21 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Owner</th>
+                                                <th scope="col">Created At</th>
+                                                <th scope="col">Last Refreshed</th>
                                                 <th scope="col">Metrics</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Trend</th>
-                                                <th scope="col">Value</th>
-                                                <th scope="col">Change</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <th scope="row">Revenue Growth</th>
+                                                <th scope="row">Data 1</th>
+                                                <td>Mark</td>
                                                 <td>12/12/2021</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>12/12/2021</td>
+                                                <td>12/12/2021</td>
                                                 <td></td>
                                                 <td></td>
                                             </tr>

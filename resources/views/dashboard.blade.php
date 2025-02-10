@@ -9,8 +9,21 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Selamat Datang</h5>
-                    <p class="card-text">Konten dashboard Anda di sini</p>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control rounded" id="datepicker" name="datepicker">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
