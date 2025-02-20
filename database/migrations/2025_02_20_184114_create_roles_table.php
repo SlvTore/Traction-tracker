@@ -18,10 +18,9 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('status')->default(1); // 1 = aktif, 0 = non aktif
-            $table->timestamp('created_at')->nullable();
-            $table->unsignedBigInteger('created_id')->nullable();
-            $table->timestamp('updated_at')->nullable();
-            $table->unsignedBigInteger('updated_id')->nullable();
+            $table->timestamps();
+            $table->integer('created_id')->nullable();
+            $table->integer('update_id')->nullable();
         });
     }
 

@@ -19,8 +19,8 @@ class CreateMasterAccessesTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('status')->default(1); // 1 = aktif, 0 = non aktif
             $table->timestamps();
-            $table->unsignedBigInteger('created_id')->nullable();
-            $table->unsignedBigInteger('update_id')->nullable();
+            $table->integer('created_id')->nullable();
+            $table->integer('update_id')->nullable();
         });
     }
 

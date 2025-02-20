@@ -17,11 +17,11 @@ class CreateRoleAccessTable extends Migration
             $table->id();
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('master_access_id');
-            $table->timestamps();
-
-            // Menambahkan foreign key constraints
             $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
             $table->foreign('master_access_id')->references('master_access_id')->on('master_accesses')->onDelete('cascade');
+            $table->timestamps();
+            $table->integer('created_id')->nullable();
+            $table->integer('update_id')->nullable();
         });
     }
 

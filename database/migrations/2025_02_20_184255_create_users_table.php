@@ -18,14 +18,16 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->unsignedBigInteger('role_id')->default(2);
             $table->text('description')->nullable();
             $table->boolean('status')->default(1); // 1 = aktif, 0 = non aktif
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade');
+            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('set null');
             $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
+            $table->string('remember_token')->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('created_id')->nullable();
-            $table->unsignedBigInteger('update_id')->nullable();
+            $table->integer('created_id')->nullable();
+            $table->integer('update_id')->nullable();
         });
     }
 
