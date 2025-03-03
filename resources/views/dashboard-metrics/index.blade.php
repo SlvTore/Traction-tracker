@@ -47,8 +47,6 @@
                                     <option value="1">Created by Me</option>
                                     <option value="2">Starred Metrics</option>
                                     <option value="3">Certified Metrics</option>
-                                    <option value="4">Not Shared with Me</option>
-                                    <option value="5">Shared with me</option>
                                 </select>
                             </div>
                         </div>
@@ -71,7 +69,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($metrics as $metric)
+                                    @foreach($metrics as $index => $metric)
                                         <tr>
                                             @foreach($metric as $data)
                                                 <td>{!! $data !!}</td>
@@ -80,6 +78,13 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-4 d-flex justify-content-end">
+                            <a href="{{ route('metrics.create') }}">
+                                <button type="button" class="btn text-white" style="background-color: #282458;"><i class="bi bi-plus-circle me-2"></i>Add Metrics</button>
+                            </a>
                         </div>
                     </div>
                 </div>

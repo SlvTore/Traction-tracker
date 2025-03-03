@@ -13,6 +13,9 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
+    Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
+    Route::post('/metrics', [MetricsController::class, 'store'])->name('metrics.store');
+    Route::delete('/metrics/{index}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
 
     Route::get('/data', function () {
         return view('data');
@@ -34,7 +37,6 @@ Route::middleware(['auth'])->group(function () {
         return view('notifications');
     })->name('notifications');
 
-    Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
