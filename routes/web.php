@@ -15,6 +15,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
     Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
     Route::post('/metrics', [MetricsController::class, 'store'])->name('metrics.store');
+    Route::post('/metrics/favorite/{index}', [MetricsController::class, 'toggleFavorite'])->name('metrics.toggleFavorite');
     Route::delete('/metrics/{index}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
 
     Route::get('/data', function () {

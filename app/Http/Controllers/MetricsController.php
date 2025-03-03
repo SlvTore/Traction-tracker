@@ -22,44 +22,64 @@ class MetricsController extends Controller
         return view('dashboard-metrics.create');
     }
 
-    public function store(Request $request)
-    {
-        $selectedMetrics = $request->input('selected_metrics', []);
-        $metrics = session()->get('metrics', []);
+public function store(Request $request)
+{
+    $selectedMetrics = $request->input('selected_metrics', []);
+    $metrics = session()->get('metrics', []);
 
-        foreach ($selectedMetrics as $metricTitle) {
-            $newMetric = [
-                $metricTitle,
-                now()->toDateString(),
-                'Up', // You can modify this as needed
-                '0', // Default value, you can modify this as needed
-                '+0', // Default change, you can modify this as needed
-                '<div class="btn-group" role="group" aria-label="Action Buttons">
-                <button type="button" class="btn btn-primary"><i class="bi bi-pencil"></i></button>
-                <form action="' . route('metrics.destroy', count($metrics)) . '" method="POST">
+    foreach ($selectedMetrics as $metricTitle) {
+        $newMetric = [
+            'title' => $metricTitle,
+            'date' => now()->toDateString(),
+            'trend' => 'Up', // You can modify this as needed
+            'value' => '0', // Default value, you can modify this as needed
+            'change' => '+0', // Default change, you can modify this as needed
+            'favorite' => false,
+        ];
+
+        $newMetric['actions'] = '
+            <div class="action-icons">
+                <a href="#" class="edit-icon"><i class="bi bi-pencil"></i></a>
+                <form action="' . route('metrics.destroy', count($metrics)) . '" method="POST" style="display:inline;">
                     ' . csrf_field() . '
                     ' . method_field('DELETE') . '
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> </button>
+                    <button type="submit" class="delete-icon"><i class="bi bi-trash"></i></button>
                 </form>
-                <button type="button" class="btn btn-warning"><i class="bi bi-star"></i></button>
-            </div> '
-            ];
-            $metrics[] = $newMetric;
-        }
+                <form action="' . route('metrics.toggleFavorite', count($metrics)) . '" method="POST" style="display:inline;">
+                    ' . csrf_field() . '
+                    <button type="submit" class="star-icon ' . ($newMetric['favorite'] ? 'favorite' : '') . '"><i class="bi bi-star"></i></button>
+                </form>
+            </div>';
 
+        $metrics[] = $newMetric;
+    }
+
+    session()->put('metrics', $metrics);
+
+    return redirect()->route('metrics');
+}
+
+public function toggleFavorite($index)
+{
+    $metrics = session()->get('metrics', []);
+    if (isset($metrics[$index])) {
+        // Toggle the favorite status
+        $metrics[$index]['favorite'] = !($metrics[$index]['favorite'] ?? false);
         session()->put('metrics', $metrics);
-
-        return redirect()->route('metrics');
     }
 
-    public function destroy($index)
-    {
-        $metrics = session()->get('metrics', []);
-        if (isset($metrics[$index])) {
-            unset($metrics[$index]);
-            session()->put('metrics', array_values($metrics)); // Reindex array
-        }
+    return redirect()->route('metrics');
+}
 
-        return redirect()->route('metrics');
+public function destroy($index)
+{
+    $metrics = session()->get('metrics', []);
+    if (isset($metrics[$index])) {
+        unset($metrics[$index]);
+        session()->put('metrics', array_values($metrics)); // Reindex array
     }
+
+    return redirect()->route('metrics');
+}
+
 }

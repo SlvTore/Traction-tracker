@@ -69,11 +69,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($metrics as $index => $metric)
+                                    @php
+                                        $sortedMetrics = collect($metrics)->sortByDesc('favorite')->toArray();
+                                    @endphp
+                                    @foreach($sortedMetrics as $index => $metric)
                                         <tr>
-                                            @foreach($metric as $data)
-                                                <td>{!! $data !!}</td>
-                                            @endforeach
+                                            <td>{{ $metric['title'] }}</td>
+                                            <td>{{ $metric['date'] }}</td>
+                                            <td>{{ $metric['trend'] }}</td>
+                                            <td>{{ $metric['value'] }}</td>
+                                            <td>{{ $metric['change'] }}</td>
+                                            <td>{!! $metric['actions'] !!}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -96,6 +102,24 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <style>
+        .action-icons a, .action-icons button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            margin: 0 5px;
+        }
+        .action-icons .edit-icon:hover {
+            color: #0d6efd; /* Bootstrap primary color */
+        }
+        .action-icons .delete-icon:hover {
+            color: #dc3545; /* Bootstrap danger color */
+        }
+        .action-icons .star-icon:hover, .action-icons .star-icon.favorite {
+            color: #ffc107; /* Bootstrap warning color */
+        }
+    </style>
 @endpush
 
 @push('scripts')
