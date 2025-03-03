@@ -70,6 +70,15 @@
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    @foreach($metrics as $metric)
+                                        <tr>
+                                            @foreach($metric as $data)
+                                                <td>{!! $data !!}</td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -85,51 +94,14 @@
 @endpush
 
 @push('scripts')
-    <script>
-    $(document).ready(function() {
-
-       $(document).ready(function() {
-           $('#metricsTable').DataTable({
-               data: @json($metrics),
-               columns: [
-                   { data: 'metrics' },
-                   { data: 'date' },
-                   {
-                       data: 'trend',
-                       render: function(data) {
-                           return data === 'up'
-                               ? '<i class="bi bi-arrow-up-right text-success"></i>'
-                               : '<i class="bi bi-arrow-down-right text-danger"></i>';
-                       }
-                   },
-                   {
-                       data: 'value',
-                       render: function(data) {
-                           return '$' + data.toLocaleString();
-                       }
-                   },
-                   {
-                       data: 'change',
-                       render: function(data) {
-                           return (data > 0 ? '+' : '') + data + '%';
-                       }
-                   },
-                   {
-                       data: null,
-                       render: function(data, type, row) {
-                           return '<div class="btn-group">' +
-                                  '<button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>' +
-                                  '<button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>' +
-                                  '</div>';
-                       }
-                   }
-               ],
-               // ... opsi DataTable lainnya ...
-           });
-       });
-    });
-    </script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#metricsTable').DataTable({
+                // Anda dapat menambahkan opsi konfigurasi DataTables di sini
+            });
+        });
+    </script>
 @endpush

@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Metrics')
@@ -79,5 +80,3 @@
 
     </div>
 @endsection
-
-
