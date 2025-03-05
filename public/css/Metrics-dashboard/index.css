@@ -1,0 +1,22 @@
+.action-icons a, .action-icons button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0 5px;
+}
+.action-icons .edit-icon:hover {
+    color: #0d6efd; /* Bootstrap primary color */
+}
+.action-icons .delete-icon:hover {
+    color: #dc3545; /* Bootstrap danger color */
+}
+.action-icons .star-icon:hover, .action-icons .star-icon.favorite {
+    color: #ffc107; /* Bootstrap warning color */
+}
+.bottom-index {
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 1000 !important;
+}
+

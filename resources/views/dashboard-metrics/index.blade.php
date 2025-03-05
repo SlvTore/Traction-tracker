@@ -1,3 +1,5 @@
+
+
 @extends('layouts.app')
 
 @section('title', 'Metrics')
@@ -62,7 +64,6 @@
                                     <tr>
                                         <th scope="col">Metrics</th>
                                         <th scope="col">Date</th>
-                                        <th scope="col">Trend</th>
                                         <th scope="col">Value</th>
                                         <th scope="col">Change</th>
                                         <th scope="col">Action</th>
@@ -76,7 +77,6 @@
                                         <tr>
                                             <td>{{ $metric['title'] }}</td>
                                             <td>{{ $metric['date'] }}</td>
-                                            <td>{{ $metric['trend'] }}</td>
                                             <td>{{ $metric['value'] }}</td>
                                             <td>{{ $metric['change'] }}</td>
                                             <td>{!! $metric['actions'] !!}</td>
@@ -86,12 +86,10 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-4 d-flex justify-content-end">
-                            <a href="{{ route('metrics.create') }}">
-                                <button type="button" class="btn text-white" style="background-color: #282458;"><i class="bi bi-plus-circle me-2"></i>Add Metrics</button>
-                            </a>
-                        </div>
+                    <div class="button-index position-fixed" style="bottom: 30px; right: 30px; z-index: 1000;">
+                        <a href="{{ route('metrics.create') }}" class="btn btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="background-color: #282458; width: 60px; height: 60px;">
+                            <i class="bi bi-plus-lg text-white fs-2"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -102,24 +100,7 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-    <style>
-        .action-icons a, .action-icons button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 0;
-            margin: 0 5px;
-        }
-        .action-icons .edit-icon:hover {
-            color: #0d6efd; /* Bootstrap primary color */
-        }
-        .action-icons .delete-icon:hover {
-            color: #dc3545; /* Bootstrap danger color */
-        }
-        .action-icons .star-icon:hover, .action-icons .star-icon.favorite {
-            color: #ffc107; /* Bootstrap warning color */
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/Metrics-dashboard/index.css') }}">
 @endpush
 
 @push('scripts')

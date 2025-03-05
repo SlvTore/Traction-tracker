@@ -30,8 +30,7 @@ public function store(Request $request)
     foreach ($selectedMetrics as $metricTitle) {
         $newMetric = [
             'title' => $metricTitle,
-            'date' => now()->toDateString(),
-            'trend' => 'Up', // You can modify this as needed
+            'date' => now()->toDateString(), // You can modify this as needed
             'value' => '0', // Default value, you can modify this as needed
             'change' => '+0', // Default change, you can modify this as needed
             'favorite' => false,
