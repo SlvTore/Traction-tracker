@@ -15,10 +15,15 @@ class CreateMetricsTable extends Migration
     {
         Schema::create('metrics', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->date('date');
-            $table->integer('trend');
-            $table->decimal('value', 15, 2);
-            $table->float('change_percentage');
+            $table->string('trend')->default('neutral');
+            $table->string('value')->default('0');
+            $table->string('change')->default('+0');
+            $table->boolean('favorite')->default(false);
+            $table->string('status')->default('warning');
+            $table->text('notes')->nullable();
+            $table->decimal('change_percentage', 5, 2)->default(0);
             $table->timestamps();
             $table->integer('created_id')->nullable();
             $table->integer('update_id')->nullable();

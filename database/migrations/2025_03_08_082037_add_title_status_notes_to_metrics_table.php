@@ -13,11 +13,6 @@ class AddTitleStatusNotesToMetricsTable extends Migration
      */
     public function up()
     {
-        Schema::table('metrics', function (Blueprint $table) {
-            $table->string('title')->nullable()->after('id');  // Menambahkan kolom title
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending')->after('value');  // Menambahkan kolom status
-            $table->text('notes')->nullable()->after('status');  // Menambahkan kolom notes
-        });
     }
 
     /**
@@ -27,8 +22,5 @@ class AddTitleStatusNotesToMetricsTable extends Migration
      */
     public function down()
     {
-        Schema::table('metrics', function (Blueprint $table) {
-            $table->dropColumn(['title', 'status', 'notes']);  // Menghapus kolom jika rollback
-        });
     }
 }
