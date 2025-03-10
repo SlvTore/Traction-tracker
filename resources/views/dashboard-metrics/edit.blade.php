@@ -102,41 +102,24 @@
         let selectedRow = null;
 
         $(document).ready(function() {
-        // Initialize DataTable
-        $('#metricsTable').DataTable();
+            // Initialize DataTable
+            $('#metricsTable').DataTable();
 
-        // Populate form with existing metric data if editing
-        @if(isset($metric))
-        // Inisialisasi form dengan data metrik yang ada
-        let table = $('#metricsTable').DataTable();
-        let statusBadge = '<span class="badge bg-{{ $metric->status == "success" ? "success" : ($metric->status == "fail" ? "danger" : "warning") }}">{{ ucfirst($metric->status) }}</span>';
-
-        // Tambahkan data ke DataTable
-        table.row.add([
-            1, // ID (bisa disesuaikan)
-            '{{ $metric->title }}',
-            '{{ $metric->date }}',
-            '{{ $metric->value }}',
-            statusBadge,
-            '{{ $metric->notes }}'
-        ]).draw();
-        @endif
-
-        // Event handler for row selection
-        $('#metricsTable tbody').on('click', 'tr', function() {
-            let table = $('#metricsTable').DataTable();
-            if ($(this).hasClass('selected')) {
-                $(this).removeClass('selected');
-                clearForm();
-                selectedRow = null;
-            } else {
-                table.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-                selectedRow = table.row(this).index();
-                populateForm(table.row(this).data());
-            }
+            // Event handler for row selection
+            $('#metricsTable tbody').on('click', 'tr', function() {
+                let table = $('#metricsTable').DataTable();
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    clearForm();
+                    selectedRow = null;
+                } else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    selectedRow = table.row(this).index();
+                    populateForm(table.row(this).data());
+                }
+            });
         });
-    });
 
         function addNewRow() {
             let table = $('#metricsTable').DataTable();
@@ -163,45 +146,45 @@
             $('#metricForm')[0].reset();
         }
 
-       function updateRow() {
-           if (selectedRow !== null) {
-               // Update UI
-               let table = $('#metricsTable').DataTable();
-               let statusBadge = '<span class="badge bg-' + ($('#metricStatus').val() === 'success' ? 'success' : ($('#metricStatus').val() === 'fail' ? 'danger' : 'warning')) + '">' + $('#metricStatus').val().charAt(0).toUpperCase() + $('#metricStatus').val().slice(1) + '</span>';
+        function updateRow() {
+            if (selectedRow !== null) {
+                // Update UI
+                let table = $('#metricsTable').DataTable();
+                let statusBadge = '<span class="badge bg-' + ($('#metricStatus').val() === 'success' ? 'success' : ($('#metricStatus').val() === 'fail' ? 'danger' : 'warning')) + '">' + $('#metricStatus').val().charAt(0).toUpperCase() + $('#metricStatus').val().slice(1) + '</span>';
 
-               table.row(selectedRow).data([
-                   selectedRow + 1,
-                   $('#metricTitle').val(),
-                   $('#metricDate').val(),
-                   $('#metricValue').val(), // Nilai yang diedit
-                   statusBadge,
-                   $('#metricNotes').val()
-               ]).draw();
+                table.row(selectedRow).data([
+                    selectedRow + 1,
+                    $('#metricTitle').val(),
+                    $('#metricDate').val(),
+                    $('#metricValue').val(), // Nilai yang diedit
+                    statusBadge,
+                    $('#metricNotes').val()
+                ]).draw();
 
-               // Send data to server
-               $.ajax({
-                   url: '{{ route("metrics.update", $metric->id) }}',
-                   type: 'POST',
-                   data: {
-                       _token: '{{ csrf_token() }}',
-                       _method: 'PUT',
-                       // Tidak mengirim title dan date untuk mencegah perubahan di index
-                       value: $('#metricValue').val(), // Akan disimpan sebagai edited_value
-                       status: $('#metricStatus').val(),
-                       notes: $('#metricNotes').val()
-                   },
-                   success: function(response) {
-                       console.log('Data saved successfully');
-                   },
-                   error: function(xhr) {
-                       console.error('Error saving data');
-                   }
-               });
+                // Send data to server
+                $.ajax({
+                    url: '{{ route("metrics.update", $metric->id) }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        _method: 'PUT',
+                        // Tidak mengirim title dan date untuk mencegah perubahan di index
+                        value: $('#metricValue').val(), // Akan disimpan sebagai edited_value
+                        status: $('#metricStatus').val(),
+                        notes: $('#metricNotes').val()
+                    },
+                    success: function(response) {
+                        console.log('Data saved successfully');
+                    },
+                    error: function(xhr) {
+                        console.error('Error saving data');
+                    }
+                });
 
-               clearForm();
-               selectedRow = null;
-           }
-       }
+                clearForm();
+                selectedRow = null;
+            }
+        }
 
         function deleteRow() {
             if (selectedRow !== null) {
