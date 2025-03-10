@@ -18,7 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/metrics/favorite/{index}', [MetricsController::class, 'toggleFavorite'])->name('metrics.toggleFavorite');
     Route::get('metrics/{index}/edit', [MetricsController::class, 'edit'])->name('metrics.edit');
     Route::put('metrics/{index}', [MetricsController::class, 'update'])->name('metrics.update');
-    Route::delete('/metrics/{index}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
+    Route::delete('metrics/{id}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
 
     Route::get('/data', function () {
         return view('data');

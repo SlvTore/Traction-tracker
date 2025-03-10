@@ -47,29 +47,44 @@ class MetricsController extends Controller
 
         return redirect()->route('metrics');
     }
+
     public function edit($id)
     {
-        $metric = Metric::findOrFail($id);
-        return view('dashboard-metrics.edit', compact('metric'));
+        \Log::info('Editing metric with ID: ' . $id);
+        try {
+            $metric = Metric::findOrFail($id);
+            return view('dashboard-metrics.edit', compact('metric'));
+        } catch (\Exception $e) {
+            \Log::error('Error finding metric: ' . $e->getMessage());
+            return redirect()->route('metrics')->with('error', 'Metric not found');
+        }
     }
 
+    // app/Http/Controllers/MetricsController.php
     public function update(Request $request, $id)
     {
         $metric = Metric::findOrFail($id);
+
+        // Hanya update kolom edited_value, status, dan notes
         $metric->update([
-            'value' => $request->input('value', $metric->value),
+            'edited_value' => $request->input('value'), // Simpan nilai yang diedit ke kolom terpisah
             'status' => $request->input('status', $metric->status),
             'notes' => $request->input('notes', $metric->notes),
         ]);
 
-        return redirect()->route('metrics')->with('success', 'Metric updated successfully.');
+        return redirect()->route('metrics')->with('success', 'Metric record updated successfully.');
     }
 
     public function destroy($id)
     {
-        $metric = Metric::findOrFail($id);
-        $metric->delete();
-
-        return redirect()->route('metrics');
+        \Log::info('Deleting metric with ID: ' . $id);
+        try {
+            $metric = Metric::findOrFail($id);
+            $metric->delete();
+            return redirect()->route('metrics')->with('success', 'Metric deleted successfully');
+        } catch (\Exception $e) {
+            \Log::error('Error deleting metric: ' . $e->getMessage());
+            return redirect()->route('metrics')->with('error', 'Failed to delete metric');
+        }
     }
 }

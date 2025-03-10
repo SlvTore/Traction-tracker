@@ -79,19 +79,19 @@
                                             <td>{{ $metric['change'] }}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Metric Actions">
-                                                    <a href="{{ route('metrics.edit', $index) }}">
+                                                    <a href="{{ route('metrics.edit', $metric['id']) }}">
                                                         <button type="button" class="btn btn-outline-primary">
                                                             Record
                                                         </button>
                                                     </a>
-                                                    <form action="{{ route('metrics.destroy', $index) }}" method="POST">
+                                                    <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger mx-2">
+                                                        <button type="submit" class="btn btn-outline-danger mx-2" onclick="return confirm('Are you sure you want to delete this metric?')">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                    <form action="{{ route('metrics.toggleFavorite', $index) }}" method="POST">
+                                                    <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ? 'active' : '' }}">
                                                             <i class="bi bi-star"></i>

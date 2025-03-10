@@ -53,32 +53,35 @@
         <div class="col-lg-3">
             <div class="card">
                 <div class="card-body">
-                    <form id="metricForm">
+                    <form id="metricForm" action="{{ route('metrics.update', $metric->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
                         <div class="mb-3">
                             <label for="metricTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="metricTitle" name="title">
+                            <input type="text" class="form-control" id="metricTitle" name="title" value="{{ $metric->title }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="metricDate" name="date">
+                            <input type="date" class="form-control" id="metricDate" name="date" value="{{ $metric->date }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricValue" class="form-label">Value</label>
-                            <input type="text" class="form-control" id="metricValue" name="value">
+                            <input type="text" class="form-control" id="metricValue" name="value"
+                                   value="{{ $metric->edited_value ?? $metric->value }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricStatus" class="form-label">Status</label>
                             <select class="form-select" id="metricStatus" name="status">
-                                <option value="warning">Warning</option>
-                                <option value="success">Success</option>
-                                <option value="fail">Fail</option>
+                                <option value="warning" {{ $metric->status == 'warning' ? 'selected' : '' }}>Warning</option>
+                                <option value="success" {{ $metric->status == 'success' ? 'selected' : '' }}>Success</option>
+                                <option value="fail" {{ $metric->status == 'fail' ? 'selected' : '' }}>Fail</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="metricNotes" class="form-label">Notes</label>
-                            <textarea class="form-control" id="metricNotes" name="notes"></textarea>
+                            <textarea class="form-control" id="metricNotes" name="notes">{{ $metric->notes }}</textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="updateRow()">Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                         <button type="button" class="btn btn-danger" onclick="deleteRow()">Delete</button>
                     </form>
                 </div>
@@ -99,22 +102,41 @@
         let selectedRow = null;
 
         $(document).ready(function() {
-            $('#metricsTable').DataTable();
+        // Initialize DataTable
+        $('#metricsTable').DataTable();
 
-            $('#metricsTable tbody').on('click', 'tr', function() {
-                let table = $('#metricsTable').DataTable();
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    clearForm();
-                    selectedRow = null;
-                } else {
-                    table.$('tr.selected').removeClass('selected');
-                    $(this).addClass('selected');
-                    selectedRow = table.row(this).index();
-                    populateForm(table.row(this).data());
-                }
-            });
+        // Populate form with existing metric data if editing
+        @if(isset($metric))
+        // Inisialisasi form dengan data metrik yang ada
+        let table = $('#metricsTable').DataTable();
+        let statusBadge = '<span class="badge bg-{{ $metric->status == "success" ? "success" : ($metric->status == "fail" ? "danger" : "warning") }}">{{ ucfirst($metric->status) }}</span>';
+
+        // Tambahkan data ke DataTable
+        table.row.add([
+            1, // ID (bisa disesuaikan)
+            '{{ $metric->title }}',
+            '{{ $metric->date }}',
+            '{{ $metric->value }}',
+            statusBadge,
+            '{{ $metric->notes }}'
+        ]).draw();
+        @endif
+
+        // Event handler for row selection
+        $('#metricsTable tbody').on('click', 'tr', function() {
+            let table = $('#metricsTable').DataTable();
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                clearForm();
+                selectedRow = null;
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+                selectedRow = table.row(this).index();
+                populateForm(table.row(this).data());
+            }
         });
+    });
 
         function addNewRow() {
             let table = $('#metricsTable').DataTable();
@@ -141,22 +163,45 @@
             $('#metricForm')[0].reset();
         }
 
-        function updateRow() {
-            if (selectedRow !== null) {
-                let table = $('#metricsTable').DataTable();
-                let statusBadge = '<span class="badge bg-' + ($('#metricStatus').val() === 'success' ? 'success' : ($('#metricStatus').val() === 'fail' ? 'danger' : 'warning')) + '">' + $('#metricStatus').val().charAt(0).toUpperCase() + $('#metricStatus').val().slice(1) + '</span>';
-                table.row(selectedRow).data([
-                    selectedRow + 1,
-                    $('#metricTitle').val(),
-                    $('#metricDate').val(),
-                    $('#metricValue').val(),
-                    statusBadge,
-                    $('#metricNotes').val()
-                ]).draw();
-                clearForm();
-                selectedRow = null;
-            }
-        }
+       function updateRow() {
+           if (selectedRow !== null) {
+               // Update UI
+               let table = $('#metricsTable').DataTable();
+               let statusBadge = '<span class="badge bg-' + ($('#metricStatus').val() === 'success' ? 'success' : ($('#metricStatus').val() === 'fail' ? 'danger' : 'warning')) + '">' + $('#metricStatus').val().charAt(0).toUpperCase() + $('#metricStatus').val().slice(1) + '</span>';
+
+               table.row(selectedRow).data([
+                   selectedRow + 1,
+                   $('#metricTitle').val(),
+                   $('#metricDate').val(),
+                   $('#metricValue').val(), // Nilai yang diedit
+                   statusBadge,
+                   $('#metricNotes').val()
+               ]).draw();
+
+               // Send data to server
+               $.ajax({
+                   url: '{{ route("metrics.update", $metric->id) }}',
+                   type: 'POST',
+                   data: {
+                       _token: '{{ csrf_token() }}',
+                       _method: 'PUT',
+                       // Tidak mengirim title dan date untuk mencegah perubahan di index
+                       value: $('#metricValue').val(), // Akan disimpan sebagai edited_value
+                       status: $('#metricStatus').val(),
+                       notes: $('#metricNotes').val()
+                   },
+                   success: function(response) {
+                       console.log('Data saved successfully');
+                   },
+                   error: function(xhr) {
+                       console.error('Error saving data');
+                   }
+               });
+
+               clearForm();
+               selectedRow = null;
+           }
+       }
 
         function deleteRow() {
             if (selectedRow !== null) {
