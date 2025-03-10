@@ -1,3 +1,4 @@
+<!-- filepath: c:\F\Maxy-Academy\Projects\Traction-tracker\resources\views\dashboard-metrics\edit.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'Edit Metric')
@@ -53,36 +54,33 @@
         <div class="col-lg-3">
             <div class="card">
                 <div class="card-body">
-                    <form id="metricForm" action="{{ route('metrics.update', $metric->id) }}" method="POST">
+                    <form id="metricForm" action="{{ route('metric-records.store', $metric->id) }}" method="POST">
                         @csrf
-                        @method('PUT')
                         <div class="mb-3">
                             <label for="metricTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="metricTitle" name="title" value="{{ $metric->title }}">
+                            <input type="text" class="form-control" id="metricTitle" name="title" value="{{ old('title') }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="metricDate" name="date" value="{{ $metric->date }}">
+                            <input type="date" class="form-control" id="metricDate" name="date" value="{{ old('date') }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricValue" class="form-label">Value</label>
-                            <input type="text" class="form-control" id="metricValue" name="value"
-                                   value="{{ $metric->edited_value ?? $metric->value }}">
+                            <input type="text" class="form-control" id="metricValue" name="value" value="{{ old('value') }}">
                         </div>
                         <div class="mb-3">
                             <label for="metricStatus" class="form-label">Status</label>
                             <select class="form-select" id="metricStatus" name="status">
-                                <option value="warning" {{ $metric->status == 'warning' ? 'selected' : '' }}>Warning</option>
-                                <option value="success" {{ $metric->status == 'success' ? 'selected' : '' }}>Success</option>
-                                <option value="fail" {{ $metric->status == 'fail' ? 'selected' : '' }}>Fail</option>
+                                <option value="warning">Warning</option>
+                                <option value="success">Success</option>
+                                <option value="fail">Fail</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="metricNotes" class="form-label">Notes</label>
-                            <textarea class="form-control" id="metricNotes" name="notes">{{ $metric->notes }}</textarea>
+                            <textarea class="form-control" id="metricNotes" name="notes">{{ old('notes') }}</textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteRow()">Delete</button>
+                        <button type="button" class="btn btn-primary" onclick="saveMetric()">Save</button>
                     </form>
                 </div>
             </div>
@@ -146,52 +144,62 @@
             $('#metricForm')[0].reset();
         }
 
-        function updateRow() {
+        function saveMetric() {
+            let table = $('#metricsTable').DataTable();
+            let formData = {
+                _token: '{{ csrf_token() }}',
+                title: $('#metricTitle').val(),
+                date: $('#metricDate').val(),
+                value: $('#metricValue').val(),
+                status: $('#metricStatus').val(),
+                notes: $('#metricNotes').val()
+            };
+
             if (selectedRow !== null) {
-                // Update UI
-                let table = $('#metricsTable').DataTable();
-                let statusBadge = '<span class="badge bg-' + ($('#metricStatus').val() === 'success' ? 'success' : ($('#metricStatus').val() === 'fail' ? 'danger' : 'warning')) + '">' + $('#metricStatus').val().charAt(0).toUpperCase() + $('#metricStatus').val().slice(1) + '</span>';
-
-                table.row(selectedRow).data([
-                    selectedRow + 1,
-                    $('#metricTitle').val(),
-                    $('#metricDate').val(),
-                    $('#metricValue').val(), // Nilai yang diedit
-                    statusBadge,
-                    $('#metricNotes').val()
-                ]).draw();
-
-                // Send data to server
+                // Update existing row
                 $.ajax({
-                    url: '{{ route("metrics.update", $metric->id) }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        _method: 'PUT',
-                        // Tidak mengirim title dan date untuk mencegah perubahan di index
-                        value: $('#metricValue').val(), // Akan disimpan sebagai edited_value
-                        status: $('#metricStatus').val(),
-                        notes: $('#metricNotes').val()
-                    },
+                    url: '{{ route("metric-records.update", ":id") }}'.replace(':id', selectedRow + 1),
+                    type: 'PUT',
+                    data: formData,
                     success: function(response) {
-                        console.log('Data saved successfully');
+                        let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
+                        table.row(selectedRow).data([
+                            selectedRow + 1,
+                            formData.title,
+                            formData.date,
+                            formData.value,
+                            statusBadge,
+                            formData.notes
+                        ]).draw();
+                        clearForm();
+                        selectedRow = null;
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating data');
+                    }
+                });
+            } else {
+                // Add new row
+                $.ajax({
+                    url: '{{ route("metric-records.store", $metric->id) }}',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
+                        table.row.add([
+                            table.rows().count() + 1,
+                            formData.title,
+                            formData.date,
+                            formData.value,
+                            statusBadge,
+                            formData.notes
+                        ]).draw();
+                        clearForm();
                     },
                     error: function(xhr) {
                         console.error('Error saving data');
                     }
                 });
-
-                clearForm();
-                selectedRow = null;
-            }
-        }
-
-        function deleteRow() {
-            if (selectedRow !== null) {
-                let table = $('#metricsTable').DataTable();
-                table.row(selectedRow).remove().draw();
-                clearForm();
-                selectedRow = null;
             }
         }
     </script>
