@@ -43,11 +43,6 @@
                             <!-- No initial rows -->
                         </tbody>
                     </table>
-                    <div class="mt-3">
-                        <button type="button" class="btn btn-success" onclick="addNewRow()">
-                            <i class="bi bi-plus-circle me-2"></i>Add Row
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -80,7 +75,7 @@
                             <label for="metricNotes" class="form-label">Notes</label>
                             <textarea class="form-control" id="metricNotes" name="notes">{{ old('notes') }}</textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="saveMetric()">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="saveMetric()">Insert Data</button>
                     </form>
                 </div>
             </div>
@@ -118,19 +113,6 @@
                 }
             });
         });
-
-        function addNewRow() {
-            let table = $('#metricsTable').DataTable();
-            let newRow = [
-                table.rows().count() + 1, // ID
-                '', // Title
-                '', // Date
-                '', // Value
-                '', // Status
-                '' // Notes
-            ];
-            table.row.add(newRow).draw();
-        }
 
         function populateForm(data) {
             $('#metricTitle').val(data[1]);
