@@ -76,7 +76,7 @@
                                             <td>{{ $metric['title'] }}</td>
                                             <td>{{ $metric['date'] }}</td>
                                             <td>{{ $metric['value'] }}</td>
-                                            <td>{{ $metric['change'] }}</td>
+                                            <td>{{ $metric['change_percentage'] }}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Metric Actions">
                                                     <a href="{{ route('metrics.edit', $metric['id']) }}">
@@ -93,7 +93,7 @@
                                                     </form>
                                                     <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ? 'active' : '' }}">
+                                                        <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ?? false ? 'active' : '' }}">
                                                             <i class="bi bi-star"></i>
                                                         </button>
                                                     </form>
