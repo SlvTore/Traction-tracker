@@ -29,7 +29,7 @@ class MetricsController extends Controller
                 'title' => $metricTitle,
                 'date' => now()->toDateString(),
                 'value' => '0',
-                'change' => '+0',
+                'change_percentage' => '+0',
                 'favorite' => false,
                 'status' => 'warning',
                 'notes' => '',
