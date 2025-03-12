@@ -15,8 +15,6 @@ class Metric extends Model
         'title',
         'date',
         'value',
-        'change',
-        'favorite',
         'status',
         'notes',
         'change_percentage',
