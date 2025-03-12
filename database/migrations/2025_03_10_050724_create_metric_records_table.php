@@ -10,6 +10,7 @@ class CreateMetricRecordsTable extends Migration
         Schema::create('metric_records', function (Blueprint $table) {
             $table->id();
             $table->foreignId('metric_id')->constrained()->onDelete('cascade');
+            $table->string('title');
             $table->string('value');
             $table->string('status');
             $table->text('notes')->nullable();

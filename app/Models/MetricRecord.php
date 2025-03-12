@@ -12,6 +12,7 @@ class MetricRecord extends Model
     // Tentukan kolom yang dapat diisi secara massal
     protected $fillable = [
         'metric_id',
+        'title',
         'value',
         'status',
         'notes',
