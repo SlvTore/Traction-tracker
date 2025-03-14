@@ -34,16 +34,18 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        
+        dd($request->all());
         // Menambahkan role_id (misalnya default 2 untuk user biasa)
         $role = Role::where('name', 'user')->first(); // Ambil role dengan nama 'user'
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -52,6 +54,11 @@ class RegisteredUserController extends Controller
             'description' => $request->description,
         ]);
 
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        // return redirect(RouteServiceProvider::HOME);
         return redirect(route('login'));
     }
 }
