@@ -8,6 +8,12 @@ use App\Models\Metric;
 
 class MetricRecordController extends Controller
 {
+
+    public function getRecords($metricId)
+    {
+        $records = MetricRecord::where('metric_id', $metricId)->get();
+        return response()->json(['data' => $records]);
+    }
     public function store(Request $request, $metricId)
     {
         $metric = Metric::findOrFail($metricId);

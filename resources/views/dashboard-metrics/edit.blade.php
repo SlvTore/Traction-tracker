@@ -1,4 +1,3 @@
-<!-- filepath: c:\F\Maxy-Academy\Projects\Traction-tracker\resources\views\dashboard-metrics\edit.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'Edit Metric')
@@ -31,7 +30,7 @@
                     <table id="metricsTable" class="table table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>No</th>
                                 <th>Title</th>
                                 <th>Date</th>
                                 <th>Value</th>
@@ -75,7 +74,8 @@
                             <label for="metricNotes" class="form-label">Notes</label>
                             <textarea class="form-control" id="metricNotes" name="notes">{{ old('notes') }}</textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="saveMetric()">Insert Data</button>
+                        <button type="button" class="btn btn-primary" id="saveButton" onclick="saveMetric()">Insert Data</button>
+                        <button type="button" class="btn btn-danger d-none" id="deleteButton" onclick="deleteMetric()">Delete Data</button>
                     </form>
                 </div>
             </div>
@@ -95,12 +95,28 @@
         let selectedRow = null;
 
         $(document).ready(function() {
-            // Initialize DataTable
-            $('#metricsTable').DataTable();
+            // Initialize DataTable with AJAX source
+            let table = $('#metricsTable').DataTable({
+                ajax: {
+                    url: '{{ route("metric-records.getRecords", $metric->id) }}',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: null, render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }},
+                    { data: 'title' },
+                    { data: 'date' },
+                    { data: 'value' },
+                    { data: 'status', render: function(data, type, row) {
+                        return '<span class="badge bg-' + (data === 'success' ? 'success' : (data === 'fail' ? 'danger' : 'warning')) + '">' + data.charAt(0).toUpperCase() + data.slice(1) + '</span>';
+                    }},
+                    { data: 'notes' }
+                ]
+            });
 
             // Event handler for row selection
             $('#metricsTable tbody').on('click', 'tr', function() {
-                let table = $('#metricsTable').DataTable();
                 if ($(this).hasClass('selected')) {
                     $(this).removeClass('selected');
                     clearForm();
@@ -115,15 +131,19 @@
         });
 
         function populateForm(data) {
-            $('#metricTitle').val(data[1]);
-            $('#metricDate').val(data[2]);
-            $('#metricValue').val(data[3]);
-            $('#metricStatus').val(data[4].includes('success') ? 'success' : (data[4].includes('fail') ? 'fail' : 'warning'));
-            $('#metricNotes').val(data[5]);
+            $('#metricTitle').val(data.title);
+            $('#metricDate').val(data.date);
+            $('#metricValue').val(data.value);
+            $('#metricStatus').val(data.status);
+            $('#metricNotes').val(data.notes);
+            $('#saveButton').text('Edit Data');
+            $('#deleteButton').removeClass('d-none');
         }
 
         function clearForm() {
             $('#metricForm')[0].reset();
+            $('#saveButton').text('Insert Data');
+            $('#deleteButton').addClass('d-none');
         }
 
         function saveMetric() {
@@ -140,19 +160,19 @@
             if (selectedRow !== null) {
                 // Update existing row
                 $.ajax({
-                    url: '{{ route("metric-records.update", ":id") }}'.replace(':id', selectedRow + 1),
+                    url: '{{ route("metric-records.update", ":id") }}'.replace(':id', table.row(selectedRow).data().id),
                     type: 'PUT',
                     data: formData,
                     success: function(response) {
                         let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
-                        table.row(selectedRow).data([
-                            selectedRow + 1,
-                            formData.title,
-                            formData.date,
-                            formData.value,
-                            statusBadge,
-                            formData.notes
-                        ]).draw();
+                        table.row(selectedRow).data({
+                            id: table.row(selectedRow).data().id,
+                            title: formData.title,
+                            date: formData.date,
+                            value: formData.value,
+                            status: statusBadge,
+                            notes: formData.notes
+                        }).draw();
                         clearForm();
                         selectedRow = null;
                     },
@@ -168,18 +188,39 @@
                     data: formData,
                     success: function(response) {
                         let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
-                        table.row.add([
-                            table.rows().count() + 1,
-                            formData.title,
-                            formData.date,
-                            formData.value,
-                            statusBadge,
-                            formData.notes
-                        ]).draw();
+                        table.row.add({
+                            id: response.data.id,
+                            title: formData.title,
+                            date: formData.date,
+                            value: formData.value,
+                            status: statusBadge,
+                            notes: formData.notes
+                        }).draw();
                         clearForm();
                     },
                     error: function(xhr) {
                         console.error('Error saving data');
+                    }
+                });
+            }
+        }
+
+        function deleteMetric() {
+            let table = $('#metricsTable').DataTable();
+            if (selectedRow !== null) {
+                $.ajax({
+                    url: '{{ route("metric-records.destroy", ":id") }}'.replace(':id', table.row(selectedRow).data().id),
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        table.row(selectedRow).remove().draw();
+                        clearForm();
+                        selectedRow = null;
+                    },
+                    error: function(xhr) {
+                        console.error('Error deleting data');
                     }
                 });
             }
