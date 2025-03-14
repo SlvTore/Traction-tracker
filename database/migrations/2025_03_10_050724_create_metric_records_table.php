@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,6 +12,7 @@ class CreateMetricRecordsTable extends Migration
             $table->id();
             $table->foreignId('metric_id')->constrained()->onDelete('cascade');
             $table->string('title');
+            $table->date('date'); // Tambahkan kolom date
             $table->string('value');
             $table->string('status');
             $table->text('notes')->nullable();

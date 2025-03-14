@@ -106,7 +106,7 @@
                         return meta.row + 1;
                     }},
                     { data: 'title' },
-                    { data: 'date' },
+                    { data: 'date' }, // Pastikan kolom date ada di sini
                     { data: 'value' },
                     { data: 'status', render: function(data, type, row) {
                         return '<span class="badge bg-' + (data === 'success' ? 'success' : (data === 'fail' ? 'danger' : 'warning')) + '">' + data.charAt(0).toUpperCase() + data.slice(1) + '</span>';

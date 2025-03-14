@@ -8,12 +8,12 @@ use App\Models\Metric;
 
 class MetricRecordController extends Controller
 {
-
     public function getRecords($metricId)
     {
         $records = MetricRecord::where('metric_id', $metricId)->get();
         return response()->json(['data' => $records]);
     }
+
     public function store(Request $request, $metricId)
     {
         $metric = Metric::findOrFail($metricId);
@@ -21,7 +21,7 @@ class MetricRecordController extends Controller
         MetricRecord::create([
             'metric_id' => $metric->id,
             'title' => $request->input('title'),
-            'date' => $request->input('date'),
+            'date' => $request->input('date'), // Pastikan kolom date ada di sini
             'value' => $request->input('value'),
             'status' => $request->input('status'),
             'notes' => $request->input('notes'),
@@ -36,7 +36,7 @@ class MetricRecordController extends Controller
 
         $record->update([
             'title' => $request->input('title'),
-            'date' => $request->input('date'),
+            'date' => $request->input('date'), // Pastikan kolom date ada di sini
             'value' => $request->input('value'),
             'status' => $request->input('status'),
             'notes' => $request->input('notes'),

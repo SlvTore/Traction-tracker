@@ -13,6 +13,7 @@ class MetricRecord extends Model
     protected $fillable = [
         'metric_id',
         'title',
+        'date', // Tambahkan kolom date
         'value',
         'status',
         'notes',
