@@ -73,7 +73,11 @@
                                     @endphp
                                     @foreach($sortedMetrics as $index => $metric)
                                         <tr>
-                                            <td>{{ $metric['title'] }}</td>
+                                            <td>
+                                                <a href="{{ route('metrics.visual', ['id' => $metric['id']]) }}">
+                                                    {{ $metric['title'] }}
+                                                </a>
+                                            </td>
                                             <td>{{ $metric['date'] }}</td>
                                             <td>{{ $metric['value'] }}</td>
                                             <td>{{ $metric['change_percentage'] }}</td>
@@ -91,7 +95,7 @@
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                    <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
+                                                    <form action="{{ route('metrics.toggleFavorite', $metric['id']) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ?? false ? 'active' : '' }}">
                                                             <i class="bi bi-star"></i>

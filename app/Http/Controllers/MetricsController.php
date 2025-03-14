@@ -19,6 +19,7 @@ class MetricsController extends Controller
         return view('dashboard-metrics.create');
     }
 
+
     public function store(Request $request)
     {
         $selectedMetrics = $request->input('selected_metrics', []);
@@ -86,5 +87,10 @@ class MetricsController extends Controller
             \Log::error('Error deleting metric: ' . $e->getMessage());
             return redirect()->route('metrics')->with('error', 'Failed to delete metric');
         }
+    }
+    public function visual($id)
+    {
+        $metric = Metric::findOrFail($id);
+        return view('dashboard-metrics.visual', compact('metric'));
     }
 }

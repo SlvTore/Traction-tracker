@@ -21,9 +21,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('metrics/{index}', [MetricsController::class, 'update'])->name('metrics.update');
     Route::delete('metrics/{id}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
 
+    Route::get('metrics/{metric}/records', [MetricRecordController::class, 'getRecords'])->name('metric-records.getRecords');
     Route::post('metrics/{metric}/records', [MetricRecordController::class, 'store'])->name('metric-records.store');
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
+
+    Route::get('/metrics/{id}/visual', [MetricsController::class, 'visual'])->name('metrics.visual');
 
     Route::get('/data', function () {
         return view('data');
