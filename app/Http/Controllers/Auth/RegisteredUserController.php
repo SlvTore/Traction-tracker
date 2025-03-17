@@ -41,7 +41,8 @@ class RegisteredUserController extends Controller
             // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
         
-        dd($request->all());
+        // dd($request->all());
+
         // Menambahkan role_id (misalnya default 2 untuk user biasa)
         $role = Role::where('name', 'user')->first(); // Ambil role dengan nama 'user'
 
