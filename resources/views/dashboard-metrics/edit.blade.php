@@ -23,6 +23,7 @@
 @endsection
 
 @section('content')
+    
     <div class="row">
         <div class="col-lg-9">
             <div class="card">
@@ -74,8 +75,22 @@
                             <label for="metricNotes" class="form-label">Notes</label>
                             <textarea class="form-control" id="metricNotes" name="notes">{{ old('notes') }}</textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" id="saveButton" onclick="saveMetric()">Insert Data</button>
-                        <button type="button" class="btn btn-danger d-none" id="deleteButton" onclick="deleteMetric()">Delete Data</button>
+                        <button type="button" class="btn btn-primary" id="saveButton" onclick="saveMetric()">
+                            <span id="saveButtonText">Insert Data</span>
+                            <span id="saveLoading" class="d-none">
+                                <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-danger d-none" id="deleteButton" onclick="deleteMetric()">
+                            <span id="deleteButtonText">Delete Data</span>
+                            <span id="deleteLoading" class="d-none">
+                                <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -91,6 +106,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let selectedRow = null;
 
@@ -106,7 +122,7 @@
                         return meta.row + 1;
                     }},
                     { data: 'title' },
-                    { data: 'date' }, // Pastikan kolom date ada di sini
+                    { data: 'date' },
                     { data: 'value' },
                     { data: 'status', render: function(data, type, row) {
                         return '<span class="badge bg-' + (data === 'success' ? 'success' : (data === 'fail' ? 'danger' : 'warning')) + '">' + data.charAt(0).toUpperCase() + data.slice(1) + '</span>';
@@ -146,6 +162,16 @@
             $('#deleteButton').addClass('d-none');
         }
 
+        function showLoading(buttonId, loadingId) {
+            $(buttonId).prop('disabled', true);
+            $(loadingId).removeClass('d-none');
+        }
+
+        function hideLoading(buttonId, loadingId) {
+            $(buttonId).prop('disabled', false);
+            $(loadingId).addClass('d-none');
+        }
+
         function saveMetric() {
             let table = $('#metricsTable').DataTable();
             let formData = {
@@ -157,6 +183,8 @@
                 notes: $('#metricNotes').val()
             };
 
+            showLoading('#saveButton', '#saveLoading');
+
             if (selectedRow !== null) {
                 // Update existing row
                 $.ajax({
@@ -164,20 +192,16 @@
                     type: 'PUT',
                     data: formData,
                     success: function(response) {
-                        let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
-                        table.row(selectedRow).data({
-                            id: table.row(selectedRow).data().id,
-                            title: formData.title,
-                            date: formData.date,
-                            value: formData.value,
-                            status: statusBadge,
-                            notes: formData.notes
-                        }).draw();
+                        hideLoading('#saveButton', '#saveLoading');
+                        alert('Data updated successfully');
+                        table.ajax.reload();
                         clearForm();
                         selectedRow = null;
                     },
                     error: function(xhr) {
                         console.error('Error updating data');
+                        hideLoading('#saveButton', '#saveLoading');
+                        alert('Error updating data');
                     }
                 });
             } else {
@@ -187,19 +211,15 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
-                        let statusBadge = '<span class="badge bg-' + (formData.status === 'success' ? 'success' : (formData.status === 'fail' ? 'danger' : 'warning')) + '">' + formData.status.charAt(0).toUpperCase() + formData.status.slice(1) + '</span>';
-                        table.row.add({
-                            id: response.data.id,
-                            title: formData.title,
-                            date: formData.date,
-                            value: formData.value,
-                            status: statusBadge,
-                            notes: formData.notes
-                        }).draw();
+                        hideLoading('#saveButton', '#saveLoading');
+                        alert('Data inserted successfully');
+                        table.ajax.reload();
                         clearForm();
                     },
                     error: function(xhr) {
                         console.error('Error saving data');
+                        hideLoading('#saveButton', '#saveLoading');
+                        alert('Error saving data');
                     }
                 });
             }
@@ -208,6 +228,7 @@
         function deleteMetric() {
             let table = $('#metricsTable').DataTable();
             if (selectedRow !== null) {
+                showLoading('#deleteButton', '#deleteLoading');
                 $.ajax({
                     url: '{{ route("metric-records.destroy", ":id") }}'.replace(':id', table.row(selectedRow).data().id),
                     type: 'DELETE',
@@ -218,9 +239,12 @@
                         table.row(selectedRow).remove().draw();
                         clearForm();
                         selectedRow = null;
+                        hideLoading('#deleteButton', '#deleteLoading');
+                        location.reload();
                     },
                     error: function(xhr) {
                         console.error('Error deleting data');
+                        hideLoading('#deleteButton', '#deleteLoading');
                     }
                 });
             }
