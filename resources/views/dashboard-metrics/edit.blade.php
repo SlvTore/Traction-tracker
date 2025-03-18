@@ -325,9 +325,10 @@
         }
     </script>
     <script title="metric-chart">
-        // Function to initialize the ApexChart
         let chart = null; // Global variable to store the chart instance
+        let originalData = []; // To store the original data from DataTables
 
+        // Function to initialize the ApexChart
         function initializeChart(data) {
             const days = data.map(item => item.date);
             const values = data.map(item => item.value);
@@ -384,15 +385,99 @@
 
             // Transform data for the chart
             const chartData = tableData.map(row => ({
-                date: row.date, // Assuming 'date' is in the format 'YYYY-MM'
+                date: row.date, // Assuming 'date' is in the format 'YYYY-MM-DD'
                 value: parseFloat(row.value) // Convert value to a number
             }));
+
+            // Store the original data for dynamic filtering
+            originalData = chartData;
 
             // Initialize or update the chart with the transformed data
             initializeChart(chartData);
         }
 
-        // Event listener to update the chart whenever DataTables data changes
+        // Function to filter data based on the selected period measurement
+        function filterDataByPeriod(period) {
+            let filteredData = [];
+
+            if (period === 'Daily') {
+                // Group data by day (e.g., Monday-Sunday)
+                filteredData = originalData; // Use original data as-is for daily
+            } else if (period === 'Weekly') {
+                // Group data by week (e.g., 7-day intervals)
+                filteredData = groupByWeek(originalData);
+            } else if (period === 'Monthly') {
+                // Group data by month (e.g., January-December)
+                filteredData = groupByMonth(originalData);
+            } else if (period === 'Yearly') {
+                // Group data by year
+                filteredData = groupByYear(originalData);
+            }
+
+            // Update the chart with the filtered data
+            initializeChart(filteredData);
+        }
+
+        // Helper function to group data by week
+        function groupByWeek(data) {
+            const grouped = [];
+            let sum = 0;
+            let count = 0;
+
+            data.forEach((item, index) => {
+                sum += item.value;
+                count++;
+
+                // Push data every 7 days or at the end of the array
+                if (count === 7 || index === data.length - 1) {
+                    grouped.push({ date: `Week ${Math.ceil((index + 1) / 7)}`, value: sum / count });
+                    sum = 0;
+                    count = 0;
+                }
+            });
+
+            return grouped;
+        }
+
+        // Helper function to group data by month
+        function groupByMonth(data) {
+            const grouped = {};
+
+            data.forEach(item => {
+                const month = item.date.substring(0, 7); // Extract YYYY-MM
+                if (!grouped[month]) {
+                    grouped[month] = { date: month, value: 0, count: 0 };
+                }
+                grouped[month].value += item.value;
+                grouped[month].count++;
+            });
+
+            return Object.values(grouped).map(item => ({
+                date: item.date,
+                value: item.value / item.count // Average value for the month
+            }));
+        }
+
+        // Helper function to group data by year
+        function groupByYear(data) {
+            const grouped = {};
+
+            data.forEach(item => {
+                const year = item.date.substring(0, 4); // Extract YYYY
+                if (!grouped[year]) {
+                    grouped[year] = { date: year, value: 0, count: 0 };
+                }
+                grouped[year].value += item.value;
+                grouped[year].count++;
+            });
+
+            return Object.values(grouped).map(item => ({
+                date: item.date,
+                value: item.value / item.count // Average value for the year
+            }));
+        }
+
+        // Event listener for the period measurement select
         $(document).ready(function() {
             const table = $('#metricsTable').DataTable();
 
@@ -404,6 +489,13 @@
             // Trigger chart update after any table redraw
             table.on('draw', function() {
                 updateChartFromTable();
+            });
+
+            // Listen for changes in the period measurement dropdown
+            $('#periodSelect').on('change', function() {
+                const selectedPeriod = $(this).val();
+                console.log('Selected Period:', selectedPeriod); // Debug selected period
+                filterDataByPeriod(selectedPeriod);
             });
         });
     </script>
