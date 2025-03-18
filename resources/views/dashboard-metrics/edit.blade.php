@@ -23,8 +23,81 @@
 @endsection
 
 @section('content')
-    
     <div class="row">
+        <div class="col-lg-4">
+            <div class="input-group">
+                <label class="input-group-text" for="inputGroupSelect01"><i class="bi bi-funnel"></i></label>
+                <select class="form-select" id="inputGroupSelect01">
+                    <option selected>All</option>
+                    <option value="1">Created by Me</option>
+                    <option value="2">Starred Metrics</option>
+                    <option value="3">Certified Metrics</option>
+                    <option value="4">Not Shared with Me</option>
+                    <option value="5">Shared with me</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
+                <input type="text" class="form-control" id="daterangepicker" placeholder="Select date range">
+            </div>
+        </div>
+        <div class="col-lg-4">
+
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body bg-secondary-subtle">
+                    <div class="row">
+                        <div class="col-3" style="border-right: 1.5px solid #666;">
+                            <h4>This Period</h4>
+                            <h5></h5>
+                        </div>
+                        <div class="col-3" style="border-right: 1.5px solid #666;">
+                            <h4>Vs Last Period</h4>
+                            <h5></h5>
+                        </div>
+                        <div class="col-3" style="border-right: 1.5px solid #666;">
+                            <h4>Vs Yearly Period</h4>
+                            <h5></h5>
+                        </div>
+                        <div class="col-3">
+                            <h4>Total of Value</h4>
+                            <h5></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="period-switch">
+                            <h6>
+                                <span>
+                                    <select name="period-measurement" class="select border-0" id="periodSelect">
+                                        <option selected>Daily</option>
+                                        <option value="1">Weekly</option>
+                                        <option value="2">Monthly</option>
+                                        <option value="4">Yearly</option>
+                                    </select>
+                                </span>
+                                Period Measurement
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
         <div class="col-lg-9">
             <div class="card">
                 <div class="card-body">
@@ -107,7 +180,8 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script title="metrics-table">
         let selectedRow = null;
 
         $(document).ready(function() {
@@ -249,5 +323,88 @@
                 });
             }
         }
+    </script>
+    <script title="metric-chart">
+        // Function to initialize the ApexChart
+        let chart = null; // Global variable to store the chart instance
+
+        function initializeChart(data) {
+            const days = data.map(item => item.date);
+            const values = data.map(item => item.value);
+
+            const options = {
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    toolbar: {
+                        show: true
+                    }
+                },
+                series: [{
+                    name: 'Metric Value',
+                    data: values
+                }],
+                xaxis: {
+                    categories: days,
+                    title: {
+                        text: 'Date'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Value'
+                    }
+                },
+                title: {
+                    text: 'Metric Trends',
+                    align: 'center'
+                }
+            };
+
+            if (chart === null) {
+                // Create a new chart if it doesn't exist
+                chart = new ApexCharts(document.querySelector("#chart"), options);
+                chart.render();
+            } else {
+                // Update the existing chart
+                chart.updateOptions(options);
+            }
+        }
+
+        // Function to fetch data from DataTables and update the chart
+        function updateChartFromTable() {
+            const table = $('#metricsTable').DataTable();
+            const tableData = table.rows().data().toArray(); // Get all rows data from DataTables
+
+            // Jika tidak ada data, jangan update chart
+            if (tableData.length === 0) {
+                console.warn('No data available in DataTables to update the chart.');
+                return;
+            }
+
+            // Transform data for the chart
+            const chartData = tableData.map(row => ({
+                date: row.date, // Assuming 'date' is in the format 'YYYY-MM'
+                value: parseFloat(row.value) // Convert value to a number
+            }));
+
+            // Initialize or update the chart with the transformed data
+            initializeChart(chartData);
+        }
+
+        // Event listener to update the chart whenever DataTables data changes
+        $(document).ready(function() {
+            const table = $('#metricsTable').DataTable();
+
+            // Trigger chart update after table initialization
+            table.on('xhr', function() {
+                updateChartFromTable();
+            });
+
+            // Trigger chart update after any table redraw
+            table.on('draw', function() {
+                updateChartFromTable();
+            });
+        });
     </script>
 @endpush
