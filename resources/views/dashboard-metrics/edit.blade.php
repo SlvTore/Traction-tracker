@@ -173,6 +173,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 @endpush
 
 @push('scripts')
@@ -180,6 +181,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script title="metrics-table">
         let selectedRow = null;
@@ -324,6 +326,39 @@
             }
         }
     </script>
+
+    <script name="metric-range-picker">
+        $(document).ready(function() {
+            // Initialize daterangepicker
+            $('#daterangepicker').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                startDate: moment().subtract(30, 'days'), // Default start date
+                endDate: moment() // Default end date
+            });
+
+            // Event listener for date range changes
+            $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+                const startDate = picker.startDate.format('YYYY-MM-DD');
+                const endDate = picker.endDate.format('YYYY-MM-DD');
+
+                // Filter data based on the selected date range
+                filterDataByDateRange(startDate, endDate);
+            });
+        });
+
+        // Function to filter data by date range
+        function filterDataByDateRange(startDate, endDate) {
+            const filteredData = originalData.filter(item => {
+                return item.date >= startDate && item.date <= endDate;
+            });
+
+            // Update the chart with the filtered data
+            initializeChart(filteredData);
+        }
+    </script>
+
     <script title="metric-chart">
         let chart = null; // Global variable to store the chart instance
         let originalData = []; // To store the original data from DataTables
