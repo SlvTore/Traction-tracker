@@ -51,15 +51,17 @@
     <div class="row mt-3">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-body bg-secondary-subtle">
+                <div class="card-header bg-secondary-subtle">
                     <div class="row">
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>This Period</h4>
-                            <h5></h5>
+                            <h2 id="focusValue" class="text-center"></h2>
+
                         </div>
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>Vs Last Period</h4>
-                            <h5></h5>
+                            <h4 id="lastValue" class="fw-bold"></h4>
+                            <p id="lastValuePercentage" class="text-center"></p>
                         </div>
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>Vs Yearly Period</h4>
@@ -148,7 +150,7 @@
                             <label for="metricNotes" class="form-label">Notes</label>
                             <textarea class="form-control" id="metricNotes" name="notes">{{ old('notes') }}</textarea>
                         </div>
-                        <button type="button" class="btn btn-primary" id="saveButton" onclick="saveMetric()">
+                        <button type="button" class="btn btn-outline-primary w-100" id="saveButton" onclick="saveMetric()">
                             <span id="saveButtonText">Insert Data</span>
                             <span id="saveLoading" class="d-none">
                                 <div class="spinner-grow spinner-grow-sm text-light" role="status">
@@ -156,7 +158,7 @@
                                 </div>
                             </span>
                         </button>
-                        <button type="button" class="btn btn-danger d-none" id="deleteButton" onclick="deleteMetric()">
+                        <button type="button" class="btn btn-outline-danger d-none w-100 mt-2" id="deleteButton" onclick="deleteMetric()">
                             <span id="deleteButtonText">Delete Data</span>
                             <span id="deleteLoading" class="d-none">
                                 <div class="spinner-grow spinner-grow-sm text-light" role="status">
@@ -364,9 +366,13 @@
         let originalData = []; // To store the original data from DataTables
 
         // Function to initialize the ApexChart
+        // Add this to the chart options in the initializeChart function
         function initializeChart(data) {
             const days = data.map(item => item.date);
             const values = data.map(item => item.value);
+
+            // Calculate the total sum of all values
+            const totalSum = values.reduce((sum, current) => sum + current, 0);
 
             const options = {
                 chart: {
@@ -374,6 +380,25 @@
                     height: 350,
                     toolbar: {
                         show: true
+                    },
+                    events: {
+                        // Add dataPointSelection event handler
+                        dataPointSelection: function(event, chartContext, config) {
+                            // Get the selected point's index and value
+                            const selectedIndex = config.dataPointIndex;
+                            const selectedValue = values[selectedIndex];
+
+                            // Calculate the percentage of the total
+                            const percentage = (selectedValue / totalSum) * 100;
+                            const formattedPercentage = percentage.toFixed(2) + '%';
+
+                            // Update the focusValue element
+                            document.getElementById('focusValue').innerHTML =
+                                `${selectedValue.toLocaleString()} (${formattedPercentage})`;
+
+                            // Handle comparison with previous period
+                            updateLastPeriodComparison(selectedIndex, values, totalSum);
+                        }
                     }
                 },
                 series: [{
@@ -394,6 +419,27 @@
                 title: {
                     text: 'Metric Trends',
                     align: 'center'
+                },
+                markers: {
+                    size: 5,
+                    hover: {
+                        size: 7
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    shared: false,
+                    intersect: true,
+                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                        const value = series[seriesIndex][dataPointIndex];
+                        const percentage = ((value / totalSum) * 100).toFixed(2);
+                        return `
+                            <div class="custom-tooltip">
+                                <span>Value: ${value.toLocaleString()}</span><br>
+                                <span>Percentage: ${percentage}%</span>
+                            </div>
+                        `;
+                    }
                 }
             };
 
@@ -405,14 +451,63 @@
                 // Update the existing chart
                 chart.updateOptions(options);
             }
+
+            // Set default values (showing the latest point's data)
+            if (values.length > 0) {
+                const latestIndex = values.length - 1;
+                const latestValue = values[latestIndex];
+                const latestPercentage = (latestValue / totalSum * 100).toFixed(2);
+
+                document.getElementById('focusValue').innerHTML =
+                    `${latestValue.toLocaleString()} (${latestPercentage}%)`;
+
+                // Set up the last period comparison for the most recent point
+                updateLastPeriodComparison(latestIndex, values, totalSum);
+            }
         }
 
-        // Function to fetch data from DataTables and update the chart
+        // Function to update the last period comparison
+        function updateLastPeriodComparison(currentIndex, values, totalSum) {
+            const lastValueEl = document.getElementById('lastValue');
+            const lastValuePercentageEl = document.getElementById('lastValuePercentage');
+
+            // Check if we have a previous period to compare with
+            if (currentIndex > 0) {
+                const currentValue = values[currentIndex];
+                const previousValue = values[currentIndex - 1];
+
+                // Calculate the percentage change
+                const percentageChange = ((currentValue - previousValue) / previousValue) * 100;
+
+                // Determine if it's an increase or decrease
+                const isIncrease = percentageChange > 0;
+
+                // Format the percentage change with + or - sign
+                const formattedChange = (isIncrease ? '+' : '') + percentageChange.toFixed(2) + '%';
+
+                // Set the text and color based on increase/decrease
+                lastValueEl.innerHTML = formattedChange;
+                lastValueEl.className = isIncrease ? 'text-success' : 'text-danger';
+
+                // Calculate percentages of total for both periods
+                const currentPercentage = (currentValue / totalSum * 100).toFixed(2);
+                const previousPercentage = (previousValue / totalSum * 100).toFixed(2);
+
+                // Update the description text
+                lastValuePercentageEl.innerHTML = `from ${previousPercentage}% to ${currentPercentage}%`;
+            } else {
+                // If there's no previous period (first data point)
+                lastValueEl.innerHTML = 'N/A';
+                lastValueEl.className = '';
+                lastValuePercentageEl.innerHTML = 'No previous data for comparison';
+            }
+        }
+
+        // Original updateChartFromTable function
         function updateChartFromTable() {
             const table = $('#metricsTable').DataTable();
-            const tableData = table.rows().data().toArray(); // Get all rows data from DataTables
+            const tableData = table.rows().data().toArray();
 
-            // Jika tidak ada data, jangan update chart
             if (tableData.length === 0) {
                 console.warn('No data available in DataTables to update the chart.');
                 return;
@@ -420,8 +515,8 @@
 
             // Transform data for the chart
             const chartData = tableData.map(row => ({
-                date: row.date, // Assuming 'date' is in the format 'YYYY-MM-DD'
-                value: parseFloat(row.value) // Convert value to a number
+                date: row.date,
+                value: parseFloat(row.value)
             }));
 
             // Store the original data for dynamic filtering
@@ -430,7 +525,6 @@
             // Initialize or update the chart with the transformed data
             initializeChart(chartData);
         }
-
         // Function to filter data based on the selected period measurement
         function filterDataByPeriod(period) {
             let filteredData = [];
