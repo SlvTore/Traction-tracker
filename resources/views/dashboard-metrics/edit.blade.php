@@ -75,21 +75,6 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="period-switch">
-                            <h6>
-                                <span>
-                                    <select name="period-measurement" class="select border-0" id="periodSelect">
-                                        <option selected>Daily</option>
-                                        <option value="1">Weekly</option>
-                                        <option value="2">Monthly</option>
-                                        <option value="4">Yearly</option>
-                                    </select>
-                                </span>
-                                Period Measurement
-                            </h6>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-12">
                             <div id="chart"></div>
                         </div>
@@ -329,44 +314,131 @@
         }
     </script>
 
-    <script name="metric-range-picker">
+    <script title="metric-range-picker-fixed">
         $(document).ready(function() {
-            // Initialize daterangepicker
+            // Initialize daterangepicker with standard behavior
             $('#daterangepicker').daterangepicker({
+                opens: 'left',
+                autoUpdateInput: true,
                 locale: {
-                    format: 'YYYY-MM-DD'
+                    format: 'YYYY-MM-DD',
+                    applyLabel: 'Apply',
+                    cancelLabel: 'Cancel'
                 },
-                startDate: moment().subtract(30, 'days'), // Default start date
-                endDate: moment() // Default end date
+                ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
+                'This Year': [moment().startOf('year'), moment().endOf('year')],
+                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                },
+                startDate: moment().subtract(30, 'days'),
+                endDate: moment()
             });
 
-            // Event listener for date range changes
+            // Handle apply event (when user selects a date range)
             $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+                // Filter data based on the selected date range
                 const startDate = picker.startDate.format('YYYY-MM-DD');
                 const endDate = picker.endDate.format('YYYY-MM-DD');
+                const filteredData = filterDataByDateRange(startDate, endDate);
 
-                // Filter data based on the selected date range
-                filterDataByDateRange(startDate, endDate);
+                // Update the chart with filtered data
+                initializeChart(filteredData);
+            });
+
+            // CRITICAL FIX: Force reinitialization of the picker on click
+            $('#daterangepicker').on('click', function(e) {
+                if ($(this).data('daterangepicker') === undefined) {
+                    // If the daterangepicker instance was destroyed, recreate it
+                    $(this).daterangepicker({
+                        opens: 'left',
+                        autoUpdateInput: true,
+                        locale: {
+                            format: 'YYYY-MM-DD',
+                            applyLabel: 'Apply',
+                            cancelLabel: 'Cancel'
+                        },
+                        ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
+                        'This Year': [moment().startOf('year'), moment().endOf('year')],
+                        'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                        },
+                        startDate: moment().subtract(30, 'days'),
+                        endDate: moment()
+                    });
+
+                    // Reattach the apply event handler
+                    $(this).on('apply.daterangepicker', function(ev, picker) {
+                        const startDate = picker.startDate.format('YYYY-MM-DD');
+                        const endDate = picker.endDate.format('YYYY-MM-DD');
+                        const filteredData = filterDataByDateRange(startDate, endDate);
+                        initializeChart(filteredData);
+                    });
+                }
+
+                // Force the picker to show
+                var picker = $(this).data('daterangepicker');
+                if (picker) {
+                    picker.show();
+
+                    // Additional fix to ensure the calendar is visible
+                    $('.daterangepicker').show();
+                }
+            });
+
+            // Fix for Bootstrap modal conflicts if you're using Bootstrap
+            // This prevents Bootstrap modal from capturing events that should go to daterangepicker
+            $(document).on('click', '.daterangepicker', function(e) {
+                e.stopPropagation();
             });
         });
 
         // Function to filter data by date range
         function filterDataByDateRange(startDate, endDate) {
-            const filteredData = originalData.filter(item => {
+            return originalData.filter(item => {
                 return item.date >= startDate && item.date <= endDate;
             });
-
-            // Update the chart with the filtered data
-            initializeChart(filteredData);
         }
+
+        // Add a small debug helper to check for daterangepicker issues
+        function checkDaterangepicker() {
+            if ($('#daterangepicker').length === 0) {
+                console.error('Daterangepicker input element not found');
+            }
+
+            if ($('#daterangepicker').data('daterangepicker') === undefined) {
+                console.error('Daterangepicker instance is missing');
+
+                // Auto-fix: reinitialize
+                $('#daterangepicker').trigger('click');
+            }
+
+            if ($('.daterangepicker').length === 0) {
+                console.error('Daterangepicker container is missing from DOM');
+            }
+        }
+
+        // Check for issues periodically
+        setInterval(checkDaterangepicker, 5000);
     </script>
+
 
     <script title="metric-chart">
         let chart = null; // Global variable to store the chart instance
         let originalData = []; // To store the original data from DataTables
 
         // Function to initialize the ApexChart
-        // Add this to the chart options in the initializeChart function
         function initializeChart(data) {
             const days = data.map(item => item.date);
             const values = data.map(item => item.value);
@@ -379,7 +451,16 @@
                     type: 'line',
                     height: 350,
                     toolbar: {
-                        show: true
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true,
+                            reset: true
+                        }
                     },
                     events: {
                         // Add dataPointSelection event handler
@@ -409,11 +490,23 @@
                     categories: days,
                     title: {
                         text: 'Date'
+                    },
+                    labels: {
+                        rotate: -45,
+                        trim: false,
+                        style: {
+                            fontSize: '12px'
+                        }
                     }
                 },
                 yaxis: {
                     title: {
                         text: 'Value'
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return val.toFixed(2);
+                        }
                     }
                 },
                 title: {
@@ -430,16 +523,37 @@
                     enabled: true,
                     shared: false,
                     intersect: true,
-                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
-                        const value = series[seriesIndex][dataPointIndex];
-                        const percentage = ((value / totalSum) * 100).toFixed(2);
-                        return `
-                            <div class="custom-tooltip">
-                                <span>Value: ${value.toLocaleString()}</span><br>
-                                <span>Percentage: ${percentage}%</span>
-                            </div>
-                        `;
+                    y: {
+                        formatter: function(val) {
+                            return val.toFixed(2);
+                        }
                     }
+                },
+                // Add annotations for better visual reference
+                annotations: {
+                    yaxis: [{
+                        y: data.length > 0 ? Math.max(...values) : 0,
+                        borderColor: '#00E396',
+                        label: {
+                            borderColor: '#00E396',
+                            style: {
+                                color: '#fff',
+                                background: '#00E396'
+                            },
+                            text: 'Highest Value'
+                        }
+                    }, {
+                        y: data.length > 0 ? Math.min(...values) : 0,
+                        borderColor: '#FF4560',
+                        label: {
+                            borderColor: '#FF4560',
+                            style: {
+                                color: '#fff',
+                                background: '#FF4560'
+                            },
+                            text: 'Lowest Value'
+                        }
+                    }]
                 }
             };
 
@@ -463,7 +577,34 @@
 
                 // Set up the last period comparison for the most recent point
                 updateLastPeriodComparison(latestIndex, values, totalSum);
+            } else {
+                // If no data is available
+                document.getElementById('focusValue').innerHTML = 'No data available';
+                document.getElementById('lastValue').innerHTML = 'N/A';
+                document.getElementById('lastValuePercentage').innerHTML = 'No data for comparison';
             }
+        }
+
+        // Function to update the chart from table data
+        function updateChartFromTable() {
+            const table = $('#metricsTable').DataTable();
+            const tableData = table.rows().data().toArray();
+            if (tableData.length === 0) {
+                console.warn('No data available in DataTables to update the chart.');
+                return;
+            }
+
+            // Transform data for the chart
+            const chartData = tableData.map(row => ({
+                date: row.date,
+                value: parseFloat(row.value)
+            }));
+
+            // Store the original data for date range filtering
+            originalData = chartData;
+
+            // Initialize or update the chart with the transformed data
+            initializeChart(chartData);
         }
 
         // Function to update the last period comparison
@@ -487,7 +628,7 @@
 
                 // Set the text and color based on increase/decrease
                 lastValueEl.innerHTML = formattedChange;
-                lastValueEl.className = isIncrease ? 'text-success' : 'text-danger';
+                lastValueEl.className = isIncrease ? 'text-success fw-bold' : 'text-danger fw-bold';
 
                 // Calculate percentages of total for both periods
                 const currentPercentage = (currentValue / totalSum * 100).toFixed(2);
@@ -503,110 +644,7 @@
             }
         }
 
-        // Original updateChartFromTable function
-        function updateChartFromTable() {
-            const table = $('#metricsTable').DataTable();
-            const tableData = table.rows().data().toArray();
-
-            if (tableData.length === 0) {
-                console.warn('No data available in DataTables to update the chart.');
-                return;
-            }
-
-            // Transform data for the chart
-            const chartData = tableData.map(row => ({
-                date: row.date,
-                value: parseFloat(row.value)
-            }));
-
-            // Store the original data for dynamic filtering
-            originalData = chartData;
-
-            // Initialize or update the chart with the transformed data
-            initializeChart(chartData);
-        }
-        // Function to filter data based on the selected period measurement
-        function filterDataByPeriod(period) {
-            let filteredData = [];
-
-            if (period === 'Daily') {
-                // Group data by day (e.g., Monday-Sunday)
-                filteredData = originalData; // Use original data as-is for daily
-            } else if (period === 'Weekly') {
-                // Group data by week (e.g., 7-day intervals)
-                filteredData = groupByWeek(originalData);
-            } else if (period === 'Monthly') {
-                // Group data by month (e.g., January-December)
-                filteredData = groupByMonth(originalData);
-            } else if (period === 'Yearly') {
-                // Group data by year
-                filteredData = groupByYear(originalData);
-            }
-
-            // Update the chart with the filtered data
-            initializeChart(filteredData);
-        }
-
-        // Helper function to group data by week
-        function groupByWeek(data) {
-            const grouped = [];
-            let sum = 0;
-            let count = 0;
-
-            data.forEach((item, index) => {
-                sum += item.value;
-                count++;
-
-                // Push data every 7 days or at the end of the array
-                if (count === 7 || index === data.length - 1) {
-                    grouped.push({ date: `Week ${Math.ceil((index + 1) / 7)}`, value: sum / count });
-                    sum = 0;
-                    count = 0;
-                }
-            });
-
-            return grouped;
-        }
-
-        // Helper function to group data by month
-        function groupByMonth(data) {
-            const grouped = {};
-
-            data.forEach(item => {
-                const month = item.date.substring(0, 7); // Extract YYYY-MM
-                if (!grouped[month]) {
-                    grouped[month] = { date: month, value: 0, count: 0 };
-                }
-                grouped[month].value += item.value;
-                grouped[month].count++;
-            });
-
-            return Object.values(grouped).map(item => ({
-                date: item.date,
-                value: item.value / item.count // Average value for the month
-            }));
-        }
-
-        // Helper function to group data by year
-        function groupByYear(data) {
-            const grouped = {};
-
-            data.forEach(item => {
-                const year = item.date.substring(0, 4); // Extract YYYY
-                if (!grouped[year]) {
-                    grouped[year] = { date: year, value: 0, count: 0 };
-                }
-                grouped[year].value += item.value;
-                grouped[year].count++;
-            });
-
-            return Object.values(grouped).map(item => ({
-                date: item.date,
-                value: item.value / item.count // Average value for the year
-            }));
-        }
-
-        // Event listener for the period measurement select
+        // Initialize on document ready
         $(document).ready(function() {
             const table = $('#metricsTable').DataTable();
 
@@ -618,13 +656,6 @@
             // Trigger chart update after any table redraw
             table.on('draw', function() {
                 updateChartFromTable();
-            });
-
-            // Listen for changes in the period measurement dropdown
-            $('#periodSelect').on('change', function() {
-                const selectedPeriod = $(this).val();
-                console.log('Selected Period:', selectedPeriod); // Debug selected period
-                filterDataByPeriod(selectedPeriod);
             });
         });
     </script>
