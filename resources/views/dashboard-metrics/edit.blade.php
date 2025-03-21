@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>Vs Yearly Period</h4>
-                            <h5></h5>
+                            <h5 id="lastValueYearly"></h5>
                         </div>
                         <div class="col-3">
                             <h4>Total of Value</h4>
