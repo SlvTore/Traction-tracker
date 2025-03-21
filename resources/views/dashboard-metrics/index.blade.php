@@ -72,36 +72,53 @@
                                         $sortedMetrics = collect($metrics)->sortByDesc('favorite')->toArray();
                                     @endphp
                                     @foreach($sortedMetrics as $index => $metric)
+                                        @php
+                                            // Get the most recent record date instead of using the metric's updated_at
+                                            $latestRecord = \App\Models\MetricRecord::where('metric_id', $metric['id'])
+                                                            ->orderBy('date', 'desc')
+                                                            ->first();
+
+                                            // Calculate days difference based on the record date, not the metric updated_at
+                                            $lastUpdated = $latestRecord ? \Carbon\Carbon::parse($latestRecord->date) : null;
+                                            $daysAgo = $lastUpdated ? $lastUpdated->diffInDays(\Carbon\Carbon::now()) : 0;
+                                            $iconColor = $daysAgo > 7 ? 'text-danger' : ($daysAgo > 3 ? 'text-warning' : '');
+                                            $popoverText = $lastUpdated ? "Last updated {$daysAgo} days ago" : "No records available";
+                                        @endphp
                                         <tr>
                                             <td>
-                                                <a href="{{ route('metrics.visual', ['id' => $metric['id']]) }}">
-                                                    {{ $metric['title'] }}
-                                                </a>
+                                                {{ $metric['title'] }}
+                                                @if($lastUpdated && $daysAgo > 3)
+                                                    <i class="bi bi-exclamation-diamond-fill {{ $iconColor }}"
+                                                       data-bs-toggle="popover"
+                                                       data-bs-trigger="hover focus"
+                                                       data-bs-content="{{ $popoverText }}">
+                                                    </i>
+                                                @endif
                                             </td>
                                             <td>{{ $metric['date'] }}</td>
                                             <td>{{ $metric['value'] }}</td>
-                                            <td>{{ $metric['change_percentage'] }}</td>
+                                            <td>{{ $metric['change_percentage'] ?? '0%' }}</td>
                                             <td>
-                                                <div class="btn-group" role="group" aria-label="Metric Actions">
-                                                    <a href="{{ route('metrics.edit', $metric['id']) }}">
-                                                        <button type="button" class="btn btn-outline-primary">
-                                                            Record
-                                                        </button>
-                                                    </a>
-                                                    <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger mx-2" onclick="return confirm('Are you sure you want to delete this metric?')">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('metrics.toggleFavorite', $metric['id']) }}" method="POST">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ?? false ? 'active' : '' }}">
-                                                            <i class="bi bi-star"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                                 <div class="btn-group" role="group" aria-label="Metric Actions">
+                                                        <a href="{{ route('metrics.edit', $metric['id']) }}">
+                                                            <button type="button" class="btn btn-outline-primary">
+                                                                Record
+                                                            </button>
+                                                        </a>
+                                                        <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-outline-danger mx-2" onclick="return confirm('Are you sure you want to delete this metric?')">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form action="{{ route('metrics.toggleFavorite', $metric['id']) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ?? false ? 'active' : '' }}">
+                                                                <i class="bi bi-star"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -134,6 +151,14 @@
         $(document).ready(function() {
             $('#metricsTable').DataTable({
                 // Anda dapat menambahkan opsi konfigurasi DataTables di sini
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
             });
         });
     </script>
