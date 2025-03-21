@@ -65,11 +65,12 @@
                         </div>
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>Vs Yearly Period</h4>
-                            <h5 id="lastValueYearly"></h5>
+                            <h4 id="lastValueYearly" class="fw-bold"></h4>
+                            <p id="lastValueYearlyPercentage" class="text-center"></p>
                         </div>
                         <div class="col-3">
                             <h4>Total of Value</h4>
-                            <h5></h5>
+                            <h2 id="totalValue" class="text-center align-self-center"></h2>
                         </div>
                     </div>
                 </div>
@@ -443,6 +444,9 @@
             const days = data.map(item => item.date);
             const values = data.map(item => item.value);
 
+            // Hitung total nilai dan perbarui elemen
+            updateTotalValue(values);
+
             // Calculate the total sum of all values
             const totalSum = values.reduce((sum, current) => sum + current, 0);
 
@@ -463,22 +467,17 @@
                         }
                     },
                     events: {
-                        // Add dataPointSelection event handler
                         dataPointSelection: function(event, chartContext, config) {
-                            // Get the selected point's index and value
                             const selectedIndex = config.dataPointIndex;
                             const selectedValue = values[selectedIndex];
-
-                            // Calculate the percentage of the total
                             const percentage = (selectedValue / totalSum) * 100;
                             const formattedPercentage = percentage.toFixed(2) + '%';
 
-                            // Update the focusValue element
                             document.getElementById('focusValue').innerHTML =
                                 `${selectedValue.toLocaleString()} (${formattedPercentage})`;
 
-                            // Handle comparison with previous period
                             updateLastPeriodComparison(selectedIndex, values, totalSum);
+                            updateYearlyComparison(selectedIndex, values, totalSum);
                         }
                     }
                 },
@@ -529,7 +528,6 @@
                         }
                     }
                 },
-                // Add annotations for better visual reference
                 annotations: {
                     yaxis: [{
                         y: data.length > 0 ? Math.max(...values) : 0,
@@ -558,15 +556,12 @@
             };
 
             if (chart === null) {
-                // Create a new chart if it doesn't exist
                 chart = new ApexCharts(document.querySelector("#chart"), options);
                 chart.render();
             } else {
-                // Update the existing chart
                 chart.updateOptions(options);
             }
 
-            // Set default values (showing the latest point's data)
             if (values.length > 0) {
                 const latestIndex = values.length - 1;
                 const latestValue = values[latestIndex];
@@ -575,13 +570,14 @@
                 document.getElementById('focusValue').innerHTML =
                     `${latestValue.toLocaleString()} (${latestPercentage}%)`;
 
-                // Set up the last period comparison for the most recent point
                 updateLastPeriodComparison(latestIndex, values, totalSum);
+                updateYearlyComparison(latestIndex, values, totalSum);
             } else {
-                // If no data is available
                 document.getElementById('focusValue').innerHTML = 'No data available';
                 document.getElementById('lastValue').innerHTML = 'N/A';
                 document.getElementById('lastValuePercentage').innerHTML = 'No data for comparison';
+                document.getElementById('lastValueYearly').innerHTML = 'N/A';
+                document.getElementById('lastValueYearlyPercentage').innerHTML = 'No yearly data for comparison';
             }
         }
 
@@ -612,36 +608,69 @@
             const lastValueEl = document.getElementById('lastValue');
             const lastValuePercentageEl = document.getElementById('lastValuePercentage');
 
-            // Check if we have a previous period to compare with
             if (currentIndex > 0) {
                 const currentValue = values[currentIndex];
                 const previousValue = values[currentIndex - 1];
 
-                // Calculate the percentage change
                 const percentageChange = ((currentValue - previousValue) / previousValue) * 100;
-
-                // Determine if it's an increase or decrease
                 const isIncrease = percentageChange > 0;
-
-                // Format the percentage change with + or - sign
                 const formattedChange = (isIncrease ? '+' : '') + percentageChange.toFixed(2) + '%';
 
-                // Set the text and color based on increase/decrease
                 lastValueEl.innerHTML = formattedChange;
                 lastValueEl.className = isIncrease ? 'text-success fw-bold' : 'text-danger fw-bold';
 
-                // Calculate percentages of total for both periods
                 const currentPercentage = (currentValue / totalSum * 100).toFixed(2);
                 const previousPercentage = (previousValue / totalSum * 100).toFixed(2);
 
-                // Update the description text
                 lastValuePercentageEl.innerHTML = `from ${previousPercentage}% to ${currentPercentage}%`;
             } else {
-                // If there's no previous period (first data point)
                 lastValueEl.innerHTML = 'N/A';
                 lastValueEl.className = '';
                 lastValuePercentageEl.innerHTML = 'No previous data for comparison';
             }
+
+            // Update yearly comparison
+            updateYearlyComparison(currentIndex, values, totalSum);
+        }
+
+        // Function to update the yearly period comparison
+        function updateYearlyComparison(currentIndex, values, totalSum) {
+            const lastValueYearlyEl = document.getElementById('lastValueYearly');
+            const lastValueYearlyPercentageEl = document.getElementById('lastValueYearlyPercentage');
+
+            // Calculate the total yearly sum
+            const yearlySum = values.reduce((sum, value) => sum + value, 0);
+
+            // Get the current value
+            const currentValue = values[currentIndex];
+
+            // Calculate the percentage of the yearly total
+            const yearlyPercentage = (currentValue / yearlySum) * 100;
+
+            // Format the yearly percentage
+            const formattedYearlyPercentage = yearlyPercentage.toFixed(2) + '%';
+
+            // Calculate the percentage change compared to the yearly average
+            const yearlyAverage = yearlySum / values.length;
+            const percentageChange = ((currentValue - yearlyAverage) / yearlyAverage) * 100;
+            const isIncrease = percentageChange > 0;
+            const formattedChange = (isIncrease ? '+' : '') + percentageChange.toFixed(2) + '%';
+
+            // Update the yearly comparison elements
+            lastValueYearlyEl.innerHTML = `${currentValue.toLocaleString()} (${formattedYearlyPercentage})`;
+            lastValueYearlyEl.className = isIncrease ? 'text-success fw-bold' : 'text-danger fw-bold';
+
+            lastValueYearlyPercentageEl.innerHTML = `${formattedChange} compared to yearly average (${yearlyAverage.toLocaleString()})`;
+        }
+
+        function updateTotalValue(values) {
+            const totalValueEl = document.getElementById('totalValue');
+
+            // Calculate the total sum of all values
+            const totalSum = values.reduce((sum, value) => sum + value, 0);
+
+            // Update the total value element
+            totalValueEl.innerHTML = totalSum.toLocaleString();
         }
 
         // Initialize on document ready
