@@ -81,8 +81,8 @@
                                             // Calculate days difference based on the record date, not the metric updated_at
                                             $lastUpdated = $latestRecord ? \Carbon\Carbon::parse($latestRecord->date) : null;
                                             $daysAgo = $lastUpdated ? $lastUpdated->diffInDays(\Carbon\Carbon::now()) : 0;
-                                            $iconColor = $daysAgo > 7 ? 'text-danger' : ($daysAgo > 3 ? 'text-warning' : '');
-                                            $popoverText = $lastUpdated ? "Last updated {$daysAgo} days ago" : "No records available";
+                                            $iconColor = $daysAgo >= 7 ? 'text-danger' : ($daysAgo >= 3 ? 'text-warning' : '');
+                                            $popoverText = $lastUpdated ? "Data updated {$daysAgo} days ago" : "No records available";
                                         @endphp
                                         <tr>
                                             <td>
@@ -90,8 +90,16 @@
                                                 @if($lastUpdated && $daysAgo > 3)
                                                     <i class="bi bi-exclamation-diamond-fill {{ $iconColor }}"
                                                        data-bs-toggle="popover"
+                                                       data-bs-html="true"
                                                        data-bs-trigger="hover focus"
-                                                       data-bs-content="{{ $popoverText }}">
+                                                       data-bs-title="<strong>Last Updated: {{ $lastUpdated->format('d M Y') }}</strong>"
+                                                       data-bs-content="<div class='popover-content'>
+                                                           <p>{{ $popoverText }}</p>
+                                                           <p>This metric needs to be updated.</p>
+                                                           <a href='{{ route('metrics.edit', $metric['id']) }}' class='btn btn-sm btn-primary w-100'>Update Data</a>
+                                                       </div>"
+                                                       data-bs-custom-class="popover-{{ $daysAgo > 7 ? 'danger' : 'warning' }}"
+                                                    >
                                                     </i>
                                                 @endif
                                             </td>
@@ -141,6 +149,43 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/Metrics-dashboard/index.css') }}">
+    <style>
+
+    .popover {
+            transition: opacity 0.3s linear;
+        }
+    .popover-danger {
+        border-color: #dc3545;
+    }
+
+    .popover-danger .popover-header {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .popover-warning {
+        border-color: #ffc107;
+    }
+
+    .popover-warning .popover-header {
+        background-color: #fff3cd;
+        color: #664d03;
+    }
+
+    .popover-content {
+        padding: 5px 0;
+    }
+
+    .popover-content p {
+        margin-bottom: 8px;
+    }
+
+    .popover-content a:hover {
+        text-decoration: none;
+        opacity: 0.9;
+    }
+
+    </style>
 @endpush
 
 @push('scripts')
@@ -158,7 +203,46 @@
         document.addEventListener('DOMContentLoaded', function () {
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
             var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                return new bootstrap.Popover(popoverTriggerEl);
+                // Create the popover
+                var popover = new bootstrap.Popover(popoverTriggerEl, {
+                    html: true,
+                    sanitize: false,
+                    trigger: 'manual',
+                    delay: { show: 500, hide: 99999 }
+                });
+
+                // Show popover on mouseenter
+                popoverTriggerEl.addEventListener('mouseenter', function() {
+                    popover.show();
+                });
+
+                // Hide popover on mouseleave after delay
+                popoverTriggerEl.addEventListener('mouseleave', function() {
+                    setTimeout(function() {
+                        // Only hide if mouse is not over popover
+                        if (!document.querySelector('.popover:hover')) {
+                            popover.hide();
+                        }
+                    }, 9000);
+                });
+
+                // Keep popover open when mouse enters the popover itself
+                document.addEventListener('mouseenter', function(e) {
+                    if (e.target.closest('.popover')) {
+                        clearTimeout(popoverTriggerEl._timeout);
+                    }
+                }, true);
+
+                // Hide popover when mouse leaves the popover after delay
+                document.addEventListener('mouseleave', function(e) {
+                    if (e.target.closest('.popover')) {
+                        setTimeout(function() {
+                            popover.hide();
+                        }, 7000); // 3 second delay
+                    }
+                }, true);
+
+                return popover;
             });
         });
     </script>
