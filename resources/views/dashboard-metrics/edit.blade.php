@@ -247,6 +247,27 @@
                 notes: $('#metricNotes').val()
             };
 
+            // Check if a record with the same date already exists
+            const inputDate = $('#metricDate').val();
+            const tableData = table.rows().data().toArray();
+            const existingRecord = tableData.find(record => record.date === inputDate);
+
+            if (existingRecord && selectedRow === null) {
+                // Show confirmation alert using SweetAlert or native confirm
+                if (confirm('Data dengan tanggal ' + inputDate + ' sudah ada. Apakah Anda ingin mengedit data tersebut?')) {
+                    // Find the row index of the existing record
+                    const rowIndex = tableData.findIndex(record => record.date === inputDate);
+                    if (rowIndex !== -1) {
+                        // Select the row with the existing data
+                        const row = table.row(rowIndex).node();
+                        $(row).addClass('selected');
+                        selectedRow = rowIndex;
+                        populateForm(tableData[rowIndex]);
+                    }
+                    return;
+                }
+            }
+
             showLoading('#saveButton', '#saveLoading');
 
             if (selectedRow !== null) {
