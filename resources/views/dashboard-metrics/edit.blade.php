@@ -51,7 +51,7 @@
     <div class="row mt-3">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header bg-secondary-subtle">
+                <div class="card-header bg-white">
                     <div class="row">
                         <div class="col-3" style="border-right: 1.5px solid #666;">
                             <h4>This Period</h4>
@@ -118,7 +118,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="metricDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="metricDate" name="date" value="{{ old('date') }}">
+                            <input type="date" class="form-control" id="metricDate" name="date" placeholder="YYYY-MM-DD" value="{{ old('date') }}">
+
                         </div>
                         <div class="mb-3">
                             <label for="metricValue" class="form-label">Value</label>
@@ -216,7 +217,7 @@
             $('#metricValue').val(data.value);
             $('#metricStatus').val(data.status);
             $('#metricNotes').val(data.notes);
-            $('#saveButton').text('Edit Data');
+            $('#saveButton').text('Update Data');
             $('#deleteButton').removeClass('d-none');
         }
 
@@ -235,6 +236,29 @@
             $(buttonId).prop('disabled', false);
             $(loadingId).addClass('d-none');
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dateInput = document.getElementById('metricDate');
+
+            // Fungsi untuk mendapatkan tanggal hari ini dalam format 'YYYY-MM-DD'
+            const getTodayDate = () => {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const date = String(today.getDate()).padStart(2, '0');
+                return `${year}-${month}-${date}`;
+            };
+
+            // Set placeholder dengan tanggal hari ini
+            if (dateInput) {
+                dateInput.placeholder = getTodayDate();
+                // Jika `value` kosong (saat form baru), isi otomatis dengan tanggal hari ini
+                if (!dateInput.value) {
+                    dateInput.value = getTodayDate();
+                }
+            }
+        });
+
 
         function saveMetric() {
             let table = $('#metricsTable').DataTable();

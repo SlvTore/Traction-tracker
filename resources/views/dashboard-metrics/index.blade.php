@@ -81,13 +81,18 @@
                                             // Calculate days difference based on the record date, not the metric updated_at
                                             $lastUpdated = $latestRecord ? \Carbon\Carbon::parse($latestRecord->date) : null;
                                             $daysAgo = $lastUpdated ? $lastUpdated->diffInDays(\Carbon\Carbon::now()) : 0;
-                                            $iconColor = $daysAgo >= 7 ? 'text-danger' : ($daysAgo >= 3 ? 'text-warning' : '');
+                                            // Always use red color regardless of days
+                                            $iconColor = 'text-danger';
                                             $popoverText = $lastUpdated ? "Data updated {$daysAgo} days ago" : "No records available";
+
+                                            // Check if warning condition is met
+                                            $needsUpdate = $lastUpdated && $daysAgo > 3;
+                                            $buttonBorderStyle = $needsUpdate ? 'border: 2px solid #dc3545;' : '';
                                         @endphp
                                         <tr>
                                             <td>
                                                 {{ $metric['title'] }}
-                                                @if($lastUpdated && $daysAgo > 3)
+                                                @if($needsUpdate)
                                                     <i class="bi bi-exclamation-circle-fill {{ $iconColor }}"
                                                     data-bs-toggle="popover"
                                                     data-bs-html="true"
@@ -97,7 +102,7 @@
                                                         <p><strong>Last Updated: {{ $lastUpdated->format('d M Y') }}</strong></p>
                                                         <p>This metric needs to be updated.</p>
                                                     </div>"
-                                                    data-bs-custom-class="popover-{{ $daysAgo > 7 ? 'danger' : 'warning' }}"
+                                                    data-bs-custom-class="popover-danger"
                                                     >
                                                     </i>
                                                 @endif
@@ -108,14 +113,13 @@
                                             <td>
                                                  <div class="btn-group" role="group" aria-label="Metric Actions">
                                                         <a href="{{ route('metrics.edit', $metric['id']) }}">
-                                                            <button type="button" class="btn position-relative my-1 text-white" style="background-color: #232E66">
+                                                            <button type="button" class="btn position-relative my-1 text-white"
+                                                                style="background-color: #232E66; {{ $buttonBorderStyle }}">
                                                                 Record
-                                                                @if($lastUpdated && $daysAgo > 3)
-                                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill
-                                                                        {{ $daysAgo >= 7 ? 'bg-danger' : 'bg-warning' }}">
+                                                                @if($needsUpdate)
+                                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                                                         !
                                                                     </span>
-
                                                                 @endif
                                                             </button>
                                                         </a>
@@ -151,10 +155,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="{{ asset('css/Metrics-dashboard/index.css') }}">
     <style>
-
     .popover {
-    transition: opacity 0.3s linear;
-        }
+        transition: opacity 0.3s linear;
+    }
     .popover-danger {
         border-color: #dc3545;
     }
@@ -162,15 +165,6 @@
     .popover-danger .popover-header {
         background-color: #f8d7da;
         color: #842029;
-    }
-
-    .popover-warning {
-        border-color: #ffc107;
-    }
-
-    .popover-warning .popover-header {
-        background-color: #fff3cd;
-        color: #664d03;
     }
 
     .popover-content {
@@ -185,7 +179,6 @@
         text-decoration: none;
         opacity: 0.9;
     }
-
     </style>
 @endpush
 
@@ -275,6 +268,5 @@
             }
         });
     });
-
-    </script>
+</script>
 @endpush
