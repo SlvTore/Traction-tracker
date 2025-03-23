@@ -201,49 +201,80 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                // Create the popover
-                var popover = new bootstrap.Popover(popoverTriggerEl, {
-                    html: true,
-                    sanitize: false,
-                    trigger: 'manual',
-                    delay: { show: 500, hide: 99999 }
-                });
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+        let activePopover = null;
+        let timeout = null;
 
-                // Show popover on mouseenter
-                popoverTriggerEl.addEventListener('mouseenter', function() {
-                    popover.show();
-                });
+        // Initialize all popovers
+        popoverTriggerList.forEach(function (popoverTriggerEl) {
+            const popover = new bootstrap.Popover(popoverTriggerEl, {
+                html: true,
+                sanitize: false,
+                trigger: 'manual',
+                placement: 'auto',
+                content: popoverTriggerEl.getAttribute('data-bs-content'),
+                title: popoverTriggerEl.getAttribute('data-bs-title')
+            });
 
-                // Hide popover on mouseleave after delay
-                popoverTriggerEl.addEventListener('mouseleave', function() {
-                    setTimeout(function() {
-                        // Only hide if mouse is not over popover
-                        if (!document.querySelector('.popover:hover')) {
-                            popover.hide();
-                        }
-                    }, 9000);
-                });
+            // Show popover on mouseenter
+            popoverTriggerEl.addEventListener('mouseenter', function () {
+                // Clear any pending hide timeout
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
 
-                // Keep popover open when mouse enters the popover itself
-                document.addEventListener('mouseenter', function(e) {
-                    if (e.target.closest('.popover')) {
-                        clearTimeout(popoverTriggerEl._timeout);
+                // Hide any other active popover
+                if (activePopover && activePopover !== popover) {
+                    activePopover.hide();
+                }
+
+                popover.show();
+                activePopover = popover;
+
+                // Add mouseover event listener to the popover once it's shown
+                setTimeout(() => {
+                    const popoverElement = document.querySelector('.popover');
+                    if (popoverElement) {
+                        popoverElement.addEventListener('mouseover', function() {
+                            if (timeout) {
+                                clearTimeout(timeout);
+                                timeout = null;
+                            }
+                        });
+
+                        popoverElement.addEventListener('mouseleave', function() {
+                            timeout = setTimeout(() => {
+                                popover.hide();
+                                activePopover = null;
+                            }, 300);
+                        });
                     }
-                }, true);
+                }, 100);
+            });
 
-                // Hide popover when mouse leaves the popover after delay
-                document.addEventListener('mouseleave', function(e) {
-                    if (e.target.closest('.popover')) {
-                        setTimeout(function() {
-                            popover.hide();
-                        }, 7000); // 3 second delay
+            // Set up delayed hide on mouseleave
+            popoverTriggerEl.addEventListener('mouseleave', function () {
+                timeout = setTimeout(() => {
+                    // Only hide if mouse isn't over the popover
+                    if (!document.querySelector('.popover:hover')) {
+                        popover.hide();
+                        activePopover = null;
                     }
-                }, true);
-
-                return popover;
+                }, 500); // Increased delay to give more time to move to popover
             });
         });
+
+        // Close popover when clicking elsewhere on the page
+        document.addEventListener('click', function(event) {
+            if (activePopover && !event.target.closest('.popover') &&
+                !event.target.hasAttribute('data-bs-toggle')) {
+                activePopover.hide();
+                activePopover = null;
+            }
+        });
+    });
+
     </script>
+
 @endpush

@@ -28,9 +28,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/metrics/{id}/visual', [MetricsController::class, 'visual'])->name('metrics.visual');
 
-    Route::get('/data', function () {
-        return view('data');
-    })->name('data');
 
     Route::get('/user', function () {
         return view('user');
@@ -44,9 +41,7 @@ Route::middleware(['auth'])->group(function () {
         return view('help');
     })->name('help');
 
-    Route::get('/notifications', function () {
-        return view('notifications');
-    })->name('notifications');
+
 
 
     Route::middleware(['auth'])->group(function () {

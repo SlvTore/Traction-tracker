@@ -69,7 +69,7 @@
         height: 1.5px;
         background-color: #878080dd;
         border: none;
-      
+
     }
 </style>
 
@@ -84,7 +84,7 @@
 
             <!-- Navigation Items -->
             <div class="collapse navbar-collapse w-100" id="navbarNav">
-                <ul class="navbar-nav flex-column w-100 gap-0 ps-3"> 
+                <ul class="navbar-nav flex-column w-100 gap-0 ps-3">
                     <li class="nav-item">
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="nav-link text-white px-0">
                             <i class="bi bi-grid-fill mr-2"></i>
@@ -95,12 +95,6 @@
                         <x-nav-link :href="route('metrics')" :active="request()->routeIs('metrics')" class="nav-link text-white px-0">
                             <i class="bi bi-graph-up-arrow mr-2"></i>
                             {{ __('Metrics') }}
-                        </x-nav-link>
-                    </li>
-                    <li class="nav-item">
-                        <x-nav-link :href="route('data')" :active="request()->routeIs('data')" class="nav-link text-white px-0">
-                            <i class="bi bi-file-earmark-bar-graph mr-2"></i>
-                            {{ __('Data Feeds') }}
                         </x-nav-link>
                     </li>
                     <li class="nav-item">
@@ -124,13 +118,6 @@
                             <x-nav-link :href="route('help')" :active="request()->routeIs('help')" class="nav-link text-white px-0">
                                 <i class="bi bi-question-circle mr-2"></i>
                                 {{ __('Help Centre') }}
-                            </x-nav-link>
-                        </li>
-
-                        <li class="nav-item">
-                            <x-nav-link :href="route('notifications')" :active="request()->routeIs('notifications')" class="nav-link text-white px-0">
-                                <i class="bi bi-bell mr-2"></i>
-                                {{ __('Notifications') }}
                             </x-nav-link>
                         </li>
                 </ul>
