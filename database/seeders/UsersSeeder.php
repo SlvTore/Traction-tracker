@@ -15,10 +15,11 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
-        // Ambil ID role Admin, Teacher, dan Student
+        // Ambil ID role Admin, Owner, Mentor, dan Member
         $adminRole = DB::table('roles')->where('name', 'Admin')->first();
-        $teacherRole = DB::table('roles')->where('name', 'Teacher')->first();
-        $studentRole = DB::table('roles')->where('name', 'Student')->first();
+        $ownerRole = DB::table('roles')->where('name', 'Owner')->first();
+        $mentorRole = DB::table('roles')->where('name', 'Mentor')->first();
+        $memberRole = DB::table('roles')->where('name', 'Member')->first();
 
         // Insert Users
         DB::table('users')->insert([
@@ -31,18 +32,26 @@ class UsersSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Admin2',
-                'email' => 'admin2@gmail.com',
-                'password' => Hash::make('admin2'),
-                'role_id' => $adminRole->id ?? 1, // Default ke 1 jika tidak ditemukan
+                'name' => 'Owner1',
+                'email' => 'owner1@gmail.com',
+                'password' => Hash::make('owner1'),
+                'role_id' => $ownerRole->id ?? 1, // Default ke 1 jika tidak ditemukan
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Admin3',
-                'email' => 'admin3@gmail.com',
-                'password' => Hash::make('admin3'),
-                'role_id' => $adminRole->id ?? 1, // Default ke 1 jika tidak ditemukan
+                'name' => 'Mentor1',
+                'email' => 'mentor1@gmail.com',
+                'password' => Hash::make('mentor1'),
+                'role_id' => $mentorRole->id ?? 1, // Default ke 1 jika tidak ditemukan
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Member1',
+                'email' => 'member1@gmail.com',
+                'password' => Hash::make('member1'),
+                'role_id' => $memberRole->id ?? 1, // Default ke 1 jika tidak ditemukan
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
