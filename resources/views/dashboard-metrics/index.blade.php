@@ -88,42 +88,43 @@
                                             <td>
                                                 {{ $metric['title'] }}
                                                 @if($lastUpdated && $daysAgo > 3)
-                                                    <i class="bi bi-exclamation-diamond-fill {{ $iconColor }}"
-                                                       data-bs-toggle="popover"
-                                                       data-bs-html="true"
-                                                       data-bs-trigger="hover focus"
-                                                       data-bs-title="<strong>Last Updated: {{ $lastUpdated->format('d M Y') }}</strong>"
-                                                       data-bs-content="<div class='popover-content'>
-                                                           <p>{{ $popoverText }}</p>
-                                                           <p>This metric needs to be updated.</p>
-                                                           <a href='{{ route('metrics.edit', $metric['id']) }}' class='btn btn-sm btn-primary w-100'>Update Data</a>
-                                                       </div>"
-                                                       data-bs-custom-class="popover-{{ $daysAgo > 7 ? 'danger' : 'warning' }}"
+                                                    <i class="bi bi-exclamation-circle-fill {{ $iconColor }}"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-html="true"
+                                                    data-bs-trigger="hover focus"
+                                                    data-bs-title="{{ $popoverText }}"
+                                                    data-bs-content="<div class='popover-content'>
+                                                        <p><strong>Last Updated: {{ $lastUpdated->format('d M Y') }}</strong></p>
+                                                        <p>This metric needs to be updated.</p>
+                                                    </div>"
+                                                    data-bs-custom-class="popover-{{ $daysAgo > 7 ? 'danger' : 'warning' }}"
                                                     >
                                                     </i>
                                                 @endif
                                             </td>
                                             <td>{{ $metric['date'] }}</td>
-                                            <td>{{ $metric['value'] }}</td>
+                                            <td class="metric-value">{{ $metric['value'] }}</td>
                                             <td>{{ $metric['change_percentage'] ?? '0%' }}</td>
                                             <td>
                                                  <div class="btn-group" role="group" aria-label="Metric Actions">
                                                         <a href="{{ route('metrics.edit', $metric['id']) }}">
-                                                            <button type="button" class="btn btn-outline-primary">
+                                                            <button type="button" class="btn position-relative my-1 text-white" style="background-color: #232E66">
                                                                 Record
+                                                                @if($lastUpdated && $daysAgo > 3)
+                                                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill
+                                                                        {{ $daysAgo >= 7 ? 'bg-danger' : 'bg-warning' }}">
+                                                                        !
+                                                                    </span>
+
+                                                                @endif
                                                             </button>
                                                         </a>
+
                                                         <form action="{{ route('metrics.destroy', $metric['id']) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-outline-danger mx-2" onclick="return confirm('Are you sure you want to delete this metric?')">
+                                                            <button type="submit" class="btn btn-outline-danger mx-3 my-1" onclick="return confirm('Are you sure you want to delete this metric?')">
                                                                 <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                        <form action="{{ route('metrics.toggleFavorite', $metric['id']) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-outline-warning {{ $metric['favorite'] ?? false ? 'active' : '' }}">
-                                                                <i class="bi bi-star"></i>
                                                             </button>
                                                         </form>
                                                     </div>
@@ -152,7 +153,7 @@
     <style>
 
     .popover {
-            transition: opacity 0.3s linear;
+    transition: opacity 0.3s linear;
         }
     .popover-danger {
         border-color: #dc3545;
@@ -276,5 +277,4 @@
     });
 
     </script>
-
 @endpush
