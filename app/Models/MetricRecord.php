@@ -15,7 +15,6 @@ class MetricRecord extends Model
         'title',
         'date', // Tambahkan kolom date
         'value',
-        'status',
         'notes',
     ];
 

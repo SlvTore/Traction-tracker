@@ -14,7 +14,6 @@ class CreateMetricRecordsTable extends Migration
             $table->string('title');
             $table->date('date'); // Tambahkan kolom date
             $table->string('value');
-            $table->string('status');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

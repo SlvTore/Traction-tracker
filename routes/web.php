@@ -26,7 +26,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
 
-    Route::get('/metrics/{id}/visual', [MetricsController::class, 'visual'])->name('metrics.visual');
 
 
     Route::get('/user', function () {
@@ -38,8 +37,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('settings');
 
     Route::get('/help', function () {
-        return view('help');
-    })->name('help');
+        return view('dashboard-helps.index');
+    })->name('helpIndex');
 
 
 

@@ -96,7 +96,6 @@
                                 <th>Title</th>
                                 <th>Date</th>
                                 <th>Value</th>
-                                <th>Status</th>
                                 <th>Notes</th>
                             </tr>
                         </thead>
@@ -124,14 +123,6 @@
                         <div class="mb-3">
                             <label for="metricValue" class="form-label">Value</label>
                             <input type="text" class="form-control" id="metricValue" name="value" value="{{ old('value') }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="metricStatus" class="form-label">Status</label>
-                            <select class="form-select" id="metricStatus" name="status">
-                                <option value="warning">Warning</option>
-                                <option value="success">Success</option>
-                                <option value="fail">Fail</option>
-                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="metricNotes" class="form-label">Notes</label>
@@ -189,9 +180,6 @@
                     { data: 'title' },
                     { data: 'date' },
                     { data: 'value' },
-                    { data: 'status', render: function(data, type, row) {
-                        return '<span class="badge bg-' + (data === 'success' ? 'success' : (data === 'fail' ? 'danger' : 'warning')) + '">' + data.charAt(0).toUpperCase() + data.slice(1) + '</span>';
-                    }},
                     { data: 'notes' }
                 ]
             });
@@ -215,7 +203,6 @@
             $('#metricTitle').val(data.title);
             $('#metricDate').val(data.date);
             $('#metricValue').val(data.value);
-            $('#metricStatus').val(data.status);
             $('#metricNotes').val(data.notes);
             $('#saveButton').text('Update Data');
             $('#deleteButton').removeClass('d-none');
@@ -267,7 +254,6 @@
                 title: $('#metricTitle').val(),
                 date: $('#metricDate').val(),
                 value: $('#metricValue').val(),
-                status: $('#metricStatus').val(),
                 notes: $('#metricNotes').val()
             };
 

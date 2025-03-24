@@ -23,7 +23,6 @@ class MetricRecordController extends Controller
             'title' => $request->input('title'),
             'date' => $request->input('date'), // Pastikan kolom date ada di sini
             'value' => $request->input('value'),
-            'status' => $request->input('status'),
             'notes' => $request->input('notes'),
         ]);
 
@@ -38,7 +37,6 @@ class MetricRecordController extends Controller
             'title' => $request->input('title'),
             'date' => $request->input('date'), // Pastikan kolom date ada di sini
             'value' => $request->input('value'),
-            'status' => $request->input('status'),
             'notes' => $request->input('notes'),
         ]);
 
