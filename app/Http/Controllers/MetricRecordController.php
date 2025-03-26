@@ -56,4 +56,27 @@ class MetricRecordController extends Controller
         $totalValue = MetricRecord::where('metric_id', $metricId)->sum('value');
         return response()->json(['total_value' => $totalValue]);
     }
+
+    public function getChange($metricId)
+    {
+        $records = MetricRecord::where('metric_id', $metricId)
+            ->orderBy('date', 'desc')
+            ->take(2) // Ambil 2 data terbaru
+            ->get();
+
+        if ($records->count() < 2) {
+            return response()->json(['change' => null]); // Tidak cukup data untuk perbandingan
+        }
+
+        $latestValue = $records[0]->value;
+        $previousValue = $records[1]->value;
+
+        if ($previousValue == 0) {
+            return response()->json(['change' => null]); // Hindari pembagian dengan nol
+        }
+
+        $percentageChange = (($latestValue - $previousValue) / $previousValue) * 100;
+
+        return response()->json(['change' => $percentageChange]);
+    }
 }

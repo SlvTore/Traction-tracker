@@ -109,7 +109,7 @@
                                             </td>
                                             <td>{{ $metric['date'] }}</td>
                                             <td class="metric-value">{{ $metric['value'] }}</td>
-                                            <td>{{ $metric['change_percentage'] ?? '0%' }}</td>
+                                            <td class="metric-change">Loading...</td>
                                             <td>
                                                  <div class="btn-group" role="group" aria-label="Metric Actions">
                                                         <a href="{{ route('metrics.edit', $metric['id']) }}">
@@ -287,6 +287,42 @@
                         .catch(error => {
                             console.error('Error fetching total value:', error);
                             valueCell.textContent = 'Error';
+                        });
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('#metricsTable tbody tr');
+
+            rows.forEach(row => {
+                const metricId = row.getAttribute('data-metric-id');
+                const changeCell = row.querySelector('.metric-change');
+
+                if (metricId && changeCell) {
+                    // Fetch change data for the metric
+                    fetch(`/metrics/${metricId}/change`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.change !== null) {
+                                const change = parseFloat(data.change).toFixed(2);
+                                const isIncrease = change > 0;
+
+                                // Update the cell with the appropriate icon and color
+                                changeCell.innerHTML = `
+                                    <span class="${isIncrease ? 'text-success' : 'text-danger'}">
+                                        <i class="bi ${isIncrease ? 'bi-arrow-up-right' : 'bi-arrow-down-right'}"></i>
+                                        ${isIncrease ? '+' : ''}${change}%
+                                    </span>
+                                `;
+                            } else {
+                                changeCell.textContent = 'N/A'; // Tidak cukup data
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching change data:', error);
+                            changeCell.textContent = 'Error';
                         });
                 }
             });

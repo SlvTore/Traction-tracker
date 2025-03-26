@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('metrics/{metric}/records', [MetricRecordController::class, 'getRecords'])->name('metric-records.getRecords');
     Route::get('/metrics/{metricId}/total-value', [MetricRecordController::class, 'getTotalValue']);
+    Route::get('/metrics/{metricId}/change', [MetricRecordController::class, 'getChange']);
     Route::post('metrics/{metric}/records', [MetricRecordController::class, 'store'])->name('metric-records.store');
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
