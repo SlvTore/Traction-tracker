@@ -56,10 +56,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/help', function () {
         return view('dashboard-helps.index');
-    })->name('helpIndex');
+    })->name('helpCenter');
 
+    Route::get('/help/FAQ', function () {
+        return view('dashboard-helps.faq');
+    })->name('helpFaq');
 
+    Route::get('/help/Features', function () {
+        return view('dashboard-helps.features');
+    })->name('helpFeatures');
 
+    Route::get('/help/Collaboration', function () {
+        return view('dashboard-helps.collabs');
+    })->name('helpCollabs');
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

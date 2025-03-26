@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Metrics')
+@section('title', 'Help Center')
 
 @section('content_header')
     <div class="row">
@@ -25,7 +25,7 @@
             <div class="card-group">
                 <div class="row justify-content-center">
                     <div class="col-md-3">
-                        <a href="{{ route('faq') }}" class="card-link">
+                        <a href="{{ route('helpFaq') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/chatbot.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="FAQ Icon"/>
@@ -36,7 +36,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('features') }}" class="card-link">
+                        <a href="{{ route('helpFeatures') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/features.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="Features Icon"/>
@@ -47,7 +47,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="" class="card-link">
+                        <a href="{{ route('helpCollabs') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/teams.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="Users and Collaborators Icon"/>
