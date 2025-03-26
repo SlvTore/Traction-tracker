@@ -50,4 +50,10 @@ class MetricRecordController extends Controller
 
         return response()->json(['success' => 'Metric record deleted successfully.']);
     }
+
+    public function getTotalValue($metricId)
+    {
+        $totalValue = MetricRecord::where('metric_id', $metricId)->sum('value');
+        return response()->json(['total_value' => $totalValue]);
+    }
 }

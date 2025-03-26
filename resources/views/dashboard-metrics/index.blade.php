@@ -89,7 +89,7 @@
                                             $needsUpdate = $lastUpdated && $daysAgo > 3;
                                             $buttonBorderStyle = $needsUpdate ? 'border: 2px solid #dc3545;' : '';
                                         @endphp
-                                        <tr>
+                                        <tr data-metric-id="{{ $metric['id'] }}">
                                             <td>
                                                 {{ $metric['title'] }}
                                                 @if($needsUpdate)
@@ -269,4 +269,28 @@
         });
     });
 </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('#metricsTable tbody tr');
+
+            rows.forEach(row => {
+                const metricId = row.getAttribute('data-metric-id');
+                const valueCell = row.querySelector('.metric-value');
+
+                if (metricId && valueCell) {
+                    // Fetch total value for the metric
+                    fetch(`/metrics/${metricId}/total-value`)
+                        .then(response => response.json())
+                        .then(data => {
+                            valueCell.textContent = data.total_value || '0';
+                        })
+                        .catch(error => {
+                            console.error('Error fetching total value:', error);
+                            valueCell.textContent = 'Error';
+                        });
+                }
+            });
+        });
+    </script>
+
 @endpush

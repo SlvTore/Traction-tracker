@@ -13,8 +13,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard-main.index');
     })->name('dashboard');
-    
-    
+
+
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
     Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
     Route::post('/metrics', [MetricsController::class, 'store'])->name('metrics.store');
@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('metrics/{id}', [MetricsController::class, 'destroy'])->name('metrics.destroy');
 
     Route::get('metrics/{metric}/records', [MetricRecordController::class, 'getRecords'])->name('metric-records.getRecords');
+    Route::get('/metrics/{metricId}/total-value', [MetricRecordController::class, 'getTotalValue']);
     Route::post('metrics/{metric}/records', [MetricRecordController::class, 'store'])->name('metric-records.store');
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
@@ -32,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    
+
     Route::get('/dashboard-user', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
