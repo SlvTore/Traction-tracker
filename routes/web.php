@@ -14,6 +14,9 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard-main.index');
     })->name('dashboard');
 
+    Route::get('/dashboard/edit', function () {
+        return view('dashboard-main.edit');
+    })->name('dashboard.edit');
 
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
     Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
