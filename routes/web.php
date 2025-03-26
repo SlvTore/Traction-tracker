@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MetricsController;
 use App\Http\Controllers\MetricRecordController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,7 +13,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard-main.index');
     })->name('dashboard');
-
+    
+    
     Route::get('/metrics', [MetricsController::class, 'index'])->name('metrics');
     Route::get('/metrics/create', [MetricsController::class, 'create'])->name('metrics.create');
     Route::post('/metrics', [MetricsController::class, 'store'])->name('metrics.store');
@@ -26,10 +28,21 @@ Route::middleware(['auth'])->group(function () {
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
 
+    Route::get('/dashboard-user', [UserController::class, 'index'])->name('user.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    
+    Route::get('/dashboard-user', [UserController::class, 'index'])->name('user.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
+
 
 
     Route::get('/user', function () {
-        return view('user');
+        return view('dashboard-user.index');
     })->name('user');
 
     Route::get('/settings', function () {

@@ -15,7 +15,15 @@ class UserController extends Controller
     {
         $users = User::with('role')->get(); // Ambil user beserta role-nya
         $roles = Role::all(); // Ambil semua role
-        return view('user', compact('users', 'roles'));
+        return view('dashboard-user.index', compact('users', 'roles')); // Update the view path
+    }
+
+    public function create(){
+        // Definisikan daftar roles secara manual
+        $roles = ['Admin', 'Member', 'Startup Owner', 'Mentor'];
+    
+        // Kirim data roles ke view
+        return view('dashboard-user.create', compact('roles'));
     }
 
     public function store(Request $request)
