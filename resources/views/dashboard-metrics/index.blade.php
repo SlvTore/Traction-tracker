@@ -282,7 +282,7 @@
                     fetch(`/metrics/${metricId}/total-value`)
                         .then(response => response.json())
                         .then(data => {
-                            valueCell.textContent = data.total_value || '0';
+                            valueCell.textContent = data.total_value || 'N/A';
                         })
                         .catch(error => {
                             console.error('Error fetching total value:', error);
