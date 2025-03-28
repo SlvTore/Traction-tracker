@@ -65,7 +65,7 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary save-user-btn">
+                <button type="submit" class="save-user-btn text-white" style="background-color: #232E66;">
                     Save
                 </button>
             </div>
@@ -90,23 +90,22 @@
     }
 
     .save-user-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        background-color: #1E1E50 !important; 
-        color: white !important;
-        padding: 12px 20px;
+        padding: 12px 20px; 
         border-radius: 8px;
         display: flex;
         align-items: center;
         gap: 8px;
         text-decoration: none;
         font-weight: bold;
+        border: none;
     }
 
-    .save-user-btn i {
+    .save-user-bt-info i {
         font-size: 18px;
+    }
+
+    .save-user-bt-info:hover {
+        background-color: #151540; 
     }
     </style>
 @endpush

@@ -18,17 +18,17 @@
     <div class="container">
         
     <!-- Filter Role -->
-    <div class="mb-3 d-flex justify-content-end" style="position: relative; width: 268px;">
-        <div style="position: absolute; top: 5px; left: 15px; color: #8C89B4; font-size: 14px; pointer-events: none;">
-            Role
+    <div class="filter-role-container mb-3 d-flex justify-content-end">
+        <div class="filter-role-card">
+            <label for="roleFilterID" class="filter-role-label">Role</label>
+            <select id="roleFilterID" class="filter-role-select">
+                <option value="all">All</option>
+                <option value="member">Member</option>
+                <option value="admin">Admin</option>
+                <option value="startup owner">Startup Owner</option>
+                <option value="mentor">Mentor</option>
+            </select>
         </div>
-        <select id="roleFilter" class="form-select" style="width: 100%; height: 60px; padding-top: 20px;">
-            <option value="all">All</option>
-            <option value="member">Member</option>
-            <option value="admin">Admin</option>
-            <option value="startup owner">Startup Owner</option>
-            <option value="mentor">Mentor</option>
-        </select>
     </div>
     
         <!-- User Table -->
@@ -38,24 +38,17 @@
                     <th class="fw-normal">Name</th>
                     <th class="fw-normal">Email</th>
                     <th class="fw-normal">Role</th>
-                    <th class="fw-normal">Last Sign in</th>
+                    <th class="fw-normal">Last Sign In</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach ($users as $user)
-                    <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->roles->name ?? 'N/A' }}</td>
-                        <td>{{ $user->last_sign_in ? $user->last_sign_in->format('d M Y, H:i') : 'Never' }}</td>
-                    </tr>
-                @endforeach                
+                <!-- Data kosong, akan diisi nanti -->
             </tbody>
 
             <!-- Add User Button -->
             <div class="position-fixed bottom-3 end-3">
-                <a href="{{ route('users.create') }}" class="add-user-btn">
-                    <i class="fas fa-plus-circle"></i> Add User
+                <a href="{{ route('users.create') }}" class="add-user-btn text-white" style="background-color: #232E66;">
+                    <i class="bi bi-plus-circle me-2"></i> Add User
                 </a>
             </div>
 
@@ -79,13 +72,36 @@
         border: 1px solid light grey;
     }
     
+    .filter-role-container {
+        width: 100%;
+    }
+
+    .filter-role-card {
+        width: 268px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .filter-role-label {
+        color: #8C89B4;
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .filter-role-select {
+        width: 100%;
+        height: 40px;
+        border: none;
+        outline: none;
+    }
+    
     .add-user-btn {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        z-index: 1000;
-        background-color: #1E1E50; 
-        color: white;
+        
         padding: 12px 20px;
         border-radius: 8px;
         display: flex;
