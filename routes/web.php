@@ -37,18 +37,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
-
-    Route::get('/dashboard-user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
 
 
 
-    Route::get('/user', function () {
-        return view('dashboard-user.index');
-    })->name('user');
 
     Route::get('/settings', function () {
         return view('settings');
