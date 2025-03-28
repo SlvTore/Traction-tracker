@@ -26,22 +26,12 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="input-group">
-                <label class="input-group-text" for="inputGroupSelect01"><i class="bi bi-funnel"></i></label>
-                <select class="form-select" id="inputGroupSelect01">
-                    <option selected>All</option>
-                    <option value="1">Created by Me</option>
-                    <option value="2">Starred Metrics</option>
-                    <option value="3">Certified Metrics</option>
-                    <option value="4">Not Shared with Me</option>
-                    <option value="5">Shared with me</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
                 <input type="text" class="form-control" id="daterangepicker" placeholder="Select date range">
             </div>
+        </div>
+        <div class="col-lg-4">
+
         </div>
         <div class="col-lg-4">
 
@@ -358,18 +348,20 @@
                     cancelLabel: 'Cancel'
                 },
                 ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
-                'This Year': [moment().startOf('year'), moment().endOf('year')],
-                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
+                    'This Year': [moment().startOf('year'), moment().endOf('year')],
+                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                 },
                 startDate: moment().subtract(30, 'days'),
-                endDate: moment()
+                endDate: moment(),
+                // PERBAIKAN: Selalu tampilkan kalender saat membuka picker
+                alwaysShowCalendars: true
             });
 
             // Handle apply event (when user selects a date range)
@@ -383,54 +375,58 @@
                 initializeChart(filteredData);
             });
 
-            // CRITICAL FIX: Force reinitialization of the picker on click
+            // PERBAIKAN UTAMA: Mengatasi masalah kalender yang hilang setelah memilih range
             $('#daterangepicker').on('click', function(e) {
-                if ($(this).data('daterangepicker') === undefined) {
-                    // If the daterangepicker instance was destroyed, recreate it
-                    $(this).daterangepicker({
-                        opens: 'left',
-                        autoUpdateInput: true,
-                        locale: {
-                            format: 'YYYY-MM-DD',
-                            applyLabel: 'Apply',
-                            cancelLabel: 'Cancel'
-                        },
-                        ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
-                        'This Year': [moment().startOf('year'), moment().endOf('year')],
-                        'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-                        },
-                        startDate: moment().subtract(30, 'days'),
-                        endDate: moment()
-                    });
-
-                    // Reattach the apply event handler
-                    $(this).on('apply.daterangepicker', function(ev, picker) {
-                        const startDate = picker.startDate.format('YYYY-MM-DD');
-                        const endDate = picker.endDate.format('YYYY-MM-DD');
-                        const filteredData = filterDataByDateRange(startDate, endDate);
-                        initializeChart(filteredData);
-                    });
-                }
-
-                // Force the picker to show
-                var picker = $(this).data('daterangepicker');
+                const picker = $(this).data('daterangepicker');
                 if (picker) {
+                    // Pastikan kalendar ditampilkan
                     picker.show();
 
-                    // Additional fix to ensure the calendar is visible
-                    $('.daterangepicker').show();
+                    // PERBAIKAN: Pastikan container kalendar terlihat
+                    setTimeout(function() {
+                        $('.daterangepicker').show();
+
+                        // PERBAIKAN: Pastikan elemen kalender dalam container terlihat
+                        $('.daterangepicker .drp-calendar').show();
+                        $('.daterangepicker .drp-calendar.left').show();
+                        $('.daterangepicker .drp-calendar.right').show();
+
+                        // PERBAIKAN: Pastikan containers untuk kalender terlihat
+                        $('.daterangepicker .ranges').show();
+                        $('.daterangepicker .drp-buttons').show();
+                    }, 10);
                 }
             });
 
-            // Fix for Bootstrap modal conflicts if you're using Bootstrap
-            // This prevents Bootstrap modal from capturing events that should go to daterangepicker
+            // PERBAIKAN: Menangani khusus klik pada range
+            $(document).on('click', '.daterangepicker .ranges li', function() {
+                // Trigger re-display kalender setelah range diklik
+                setTimeout(function() {
+                    $('.daterangepicker .drp-calendar').show();
+                    $('.daterangepicker .drp-calendar.left').show();
+                    $('.daterangepicker .drp-calendar.right').show();
+                }, 10);
+            });
+
+            // PERBAIKAN: CSS override untuk memastikan kalender selalu terlihat
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    .daterangepicker .drp-calendar {
+                        display: block !important;
+                        max-height: none !important;
+                        opacity: 1 !important;
+                    }
+                    .daterangepicker.show-calendar .drp-calendar {
+                        display: block !important;
+                    }
+                    .daterangepicker.show-ranges .ranges {
+                        display: block !important;
+                    }
+                `)
+                .appendTo('head');
+
+            // Tangani klik pada container daterangepicker untuk menghentikan event bubbling
             $(document).on('click', '.daterangepicker', function(e) {
                 e.stopPropagation();
             });
@@ -442,27 +438,6 @@
                 return item.date >= startDate && item.date <= endDate;
             });
         }
-
-        // Add a small debug helper to check for daterangepicker issues
-        function checkDaterangepicker() {
-            if ($('#daterangepicker').length === 0) {
-                console.error('Daterangepicker input element not found');
-            }
-
-            if ($('#daterangepicker').data('daterangepicker') === undefined) {
-                console.error('Daterangepicker instance is missing');
-
-                // Auto-fix: reinitialize
-                $('#daterangepicker').trigger('click');
-            }
-
-            if ($('.daterangepicker').length === 0) {
-                console.error('Daterangepicker container is missing from DOM');
-            }
-        }
-
-        // Check for issues periodically
-        setInterval(checkDaterangepicker, 5000);
     </script>
 
 

@@ -16,7 +16,9 @@ class MetricsController extends Controller
 
     public function create()
     {
-        return view('dashboard-metrics.create');
+        // Mendapatkan semua metrics yang sudah ada untuk perbandingan
+        $existingMetrics = Metric::pluck('title')->toArray();
+        return view('dashboard-metrics.create', compact('existingMetrics'));
     }
 
 

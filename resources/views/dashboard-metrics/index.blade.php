@@ -10,13 +10,6 @@
             </h2>
             <h5 class=" ms-1">Transaction</h5>
         </div>
-
-        <div class="col-lg-4">
-            <form class="d-flex" role="search">
-                <input class="form-control me-2 rounded" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-            </form>
-        </div>
     </div>
 @endsection
 
@@ -25,37 +18,18 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
                         <div class="col-md-4">
-                            <div class="input-group">
-                                <label class="input-group-text" for="inputGroupSelect01"><i class="bi bi-funnel"></i></label>
-                                <select class="form-select" id="inputGroupSelect01">
-                                    <option selected>All</option>
-                                    <option value="1">Created by Me</option>
-                                    <option value="2">Starred Metrics</option>
-                                    <option value="3">Certified Metrics</option>
-                                    <option value="4">Not Shared with Me</option>
-                                    <option value="5">Shared with me</option>
-                                </select>
-                            </div>
+                        </div>
+                        <div class="col-md-4">
                         </div>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <label class="input-group-text" for="inputGroupSelect02"><i class="bi bi-wrench-adjustable"></i></label>
-                                <select class="form-select" id="inputGroupSelect02">
-                                    <option selected>All</option>
-                                    <option value="1">Created by Me</option>
-                                    <option value="2">Starred Metrics</option>
-                                    <option value="3">Certified Metrics</option>
-                                </select>
+                                <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
+                                <input type="text" class="form-control" id="daterangepicker" placeholder="Select date range">
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control rounded" id="datepicker" name="datepicker">
-                        </div>
-                    </div>
 
-                    <div class="row mt-4">
+                    <div class="row mt-4 mx-1 mb-2">
                         <div class="col-md-12">
                             <table class="table" id="metricsTable">
                                 <thead>
@@ -153,6 +127,10 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="{{ asset('css/Metrics-dashboard/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Metrics-dashboard/index.css') }}">
     <style>
     .popover {
@@ -186,13 +164,118 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#metricsTable').DataTable({
-                // Anda dapat menambahkan opsi konfigurasi DataTables di sini
-            });
+    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+   <script>
+    $(document).ready(function() {
+        // Initialize DataTable (with all configuration in one place)
+        const metricsTable = $('#metricsTable').DataTable({
+            // Konfigurasi DataTable
+            pageLength: 10,
+            responsive: true,
+            // Tambahkan konfigurasi lain yang diperlukan
         });
-    </script>
+
+        // Initialize daterangepicker
+        $('#daterangepicker').daterangepicker({
+            opens: 'left',
+            autoUpdateInput: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                applyLabel: 'Apply',
+                cancelLabel: 'Cancel'
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'This Quarter': [moment().startOf('quarter'), moment().endOf('quarter')],
+                'This Year': [moment().startOf('year'), moment().endOf('year')]
+            },
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment(),
+            alwaysShowCalendars: true
+        });
+
+        // Apply date range filter to DataTable when date range changes
+        $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+            const startDate = picker.startDate.format('YYYY-MM-DD');
+            const endDate = picker.endDate.format('YYYY-MM-DD');
+
+            // Filter DataTable based on date range
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    // Assuming date is in column index 1 (adjust if needed)
+                    const rowDate = data[1];
+
+                    if (!startDate || !endDate) return true;
+                    if (!rowDate) return false;
+
+                    const date = moment(rowDate, 'YYYY-MM-DD');
+                    return (date >= moment(startDate) && date <= moment(endDate));
+                }
+            );
+
+            metricsTable.draw();
+
+            // Remove the filter after application to prevent stacking
+            $.fn.dataTable.ext.search.pop();
+        });
+
+        // Fix for calendar visibility issues
+        $('#daterangepicker').on('click', function(e) {
+            const picker = $(this).data('daterangepicker');
+            if (picker) {
+                picker.show();
+
+                setTimeout(function() {
+                    $('.daterangepicker').show();
+                    $('.daterangepicker .drp-calendar').show();
+                    $('.daterangepicker .drp-calendar.left').show();
+                    $('.daterangepicker .drp-calendar.right').show();
+                    $('.daterangepicker .ranges').show();
+                    $('.daterangepicker .drp-buttons').show();
+                }, 10);
+            }
+        });
+
+        // Handle clicks on range selections
+        $(document).on('click', '.daterangepicker .ranges li', function() {
+            setTimeout(function() {
+                $('.daterangepicker .drp-calendar').show();
+                $('.daterangepicker .drp-calendar.left').show();
+                $('.daterangepicker .drp-calendar.right').show();
+            }, 10);
+        });
+
+        // CSS override to ensure calendar visibility
+        $('<style>')
+            .prop('type', 'text/css')
+            .html(`
+                .daterangepicker .drp-calendar {
+                    display: block !important;
+                    max-height: none !important;
+                    opacity: 1 !important;
+                }
+                .daterangepicker.show-calendar .drp-calendar {
+                    display: block !important;
+                }
+                .daterangepicker.show-ranges .ranges {
+                    display: block !important;
+                }
+            `)
+            .appendTo('head');
+
+        // Prevent event bubbling
+        $(document).on('click', '.daterangepicker', function(e) {
+            e.stopPropagation();
+        });
+    });
+</script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
