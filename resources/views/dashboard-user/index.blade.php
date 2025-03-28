@@ -46,7 +46,7 @@
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ ucfirst($user->role_id) }}</td>
+                        <td>{{ $user->roles->name ?? 'N/A' }}</td>
                         <td>{{ $user->last_sign_in ? $user->last_sign_in->format('d M Y, H:i') : 'Never' }}</td>
                     </tr>
                 @endforeach                

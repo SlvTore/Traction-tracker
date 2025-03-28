@@ -13,9 +13,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->get(); // Ambil user beserta role-nya
-        $roles = Role::all(); // Ambil semua role
-        return view('dashboard-user.index', compact('users', 'roles')); // Update the view path
+        $users = User::with('roles')->get(); 
+        return view('dashboard-user.index', compact('users')); // Pass $users to the view
     }
 
     public function create(){
