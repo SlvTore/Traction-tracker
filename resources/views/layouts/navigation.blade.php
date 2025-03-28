@@ -95,7 +95,7 @@
             <div class="collapse navbar-collapse w-100" id="navbarNav">
                 <ul class="navbar-nav flex-column w-100 gap-0 ps-3">
                     <li class="nav-item">
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="nav-link text-white px-0">
+                        <x-nav-link :href="route('dashboard.edit')" :active="request()->routeIs('dashboard.edit')" class="nav-link text-white px-0">
                             <i class="bi bi-grid-fill mx-2"></i>
                             {{ __('Dashboard') }}
                         </x-nav-link>
