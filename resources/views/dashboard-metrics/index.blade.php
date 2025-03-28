@@ -5,7 +5,7 @@
 @section('content_header')
     <div class="row">
         <div class="col-lg-8">
-            <h2>
+            <h2 class="fw-bolder">
                 {{ __('Metrics') }}
             </h2>
             <h5 class=" ms-1">Transaction</h5>

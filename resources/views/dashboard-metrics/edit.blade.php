@@ -8,7 +8,7 @@
             <a href="{{ route('metrics') }}" class="text-decoration-none text-dark">
                 <i class="bi bi-arrow-bar-left fw-bold fs-1 me-2"></i>
             </a>
-            <h2 class="mb-0">
+            <h2 class="mb-0 fw-bolder">
                 {{ __('Metrics') }}
             </h2>
         </div>
