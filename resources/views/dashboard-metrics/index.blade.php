@@ -8,7 +8,6 @@
             <h2 class="fw-bolder">
                 {{ __('Metrics') }}
             </h2>
-            <h5 class=" ms-1">Transaction</h5>
         </div>
     </div>
 @endsection
