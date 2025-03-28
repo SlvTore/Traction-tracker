@@ -28,8 +28,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12 fw-bold" style="color: #282458">
-                            <h5 class="card-title">Which Metrics Would you like to choose?</h5>
+                        <div class="col-md-12 mb-2" style="color: #282458">
+                            <h5 class="card-title fw-bolder">Which Metrics Would you like to choose?</h5>
                         </div>
                     </div>
                     <form action="{{ route('metrics.store') }}" method="POST">
@@ -61,7 +61,7 @@
                                 <div class="col">
                                     <div class="card h-100 {{ $isExisting ? 'bg-light' : '' }}">
                                         <div class="card-header">
-                                            <h6 class="card-title" style="color: #282458">{{ $card['title'] }}</h6>
+                                            <h6 class="card-title fw-bold" style="color: #282458">{{ $card['title'] }}</h6>
                                             @if($isExisting)
                                                 <span class="badge bg-success">Imported</span>
                                             @endif

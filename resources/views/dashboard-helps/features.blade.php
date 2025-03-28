@@ -5,7 +5,7 @@
 @section('content_header')
     <div class="row">
         <div class="col-lg-8">
-            <h2>
+            <h2 class="fw-bolder">
                 {{ __('Help Center') }}
             </h2>
             <h6 class="mb-0 ms-1">
@@ -21,7 +21,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 d-flex align-items-center">
-                        <a href="{{ route('helpCenter') }}" class="btn btn-outline-secondary rounded-circle me-3">
+                        <a href="{{ route('helpIndex') }}" class="btn btn-outline-secondary rounded-circle me-3">
                             <i class="bi bi-chevron-left"></i>
                         </a>
                         <div class="flex-grow-1 d-flex justify-content-center">
@@ -42,22 +42,22 @@
                     <div class="col-md-12 d-flex align-items-center justify-content-center">
                         <div class="card">
                             <div class="card-body">
-                                <ul>
-                                    <li>
-                                        <i class="bi bi-pin-angle-fill"></i>
-                                        <p>Track your business metrics</p>
+                                <ul class="list-unstyled">
+                                    <li class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-pin-angle-fill me-2"></i>
+                                        <span>Track your business metrics</span>
                                     </li>
-                                    <li>
-                                        <i class="bi bi-pin-angle-fill my-1"></i>
-                                        <p>Monitor your business performance</p>
+                                    <li class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-pin-angle-fill me-2"></i>
+                                        <span>Monitor your business performance</span>
                                     </li>
-                                    <li>
-                                        <i class="bi bi-pin-angle-fill my-1"></i>
-                                        <p>Analyze your business data</p>
+                                    <li class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-pin-angle-fill me-2"></i>
+                                        <span>Analyze your business data</span>
                                     </li>
-                                    <li>
-                                        <i class="bi bi-pin-angle-fill my-1"></i>
-                                        <p>Generate reports and insights</p>
+                                    <li class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-pin-angle-fill me-2"></i>
+                                        <span>Generate reports and insights</span>
                                     </li>
                                 </ul>
                             </div>

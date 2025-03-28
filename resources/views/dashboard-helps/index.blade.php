@@ -5,7 +5,7 @@
 @section('content_header')
     <div class="row">
         <div class="col-lg-8">
-            <h2>
+            <h2 class="fw-bolder">
                 {{ __('Help Center') }}
             </h2>
         </div>
@@ -25,7 +25,7 @@
             <div class="card-group">
                 <div class="row justify-content-center">
                     <div class="col-md-3">
-                        <a href="{{ route('faq') }}" class="card-link">
+                        <a href="{{ route('helpFaq') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/chatbot.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="FAQ Icon"/>
@@ -36,7 +36,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('features') }}" class="card-link">
+                        <a href="{{ route('helpFeatures') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/features.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="Features Icon"/>
@@ -47,7 +47,7 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="" class="card-link">
+                        <a href="{{ route('helpCollabs') }}" class="card-link">
                             <div class="card shadow">
                                 <div class="card-body text-center">
                                     <img src="{{ asset('images/teams.png') }}" class="my-2 mx-auto" width="35px" height="auto" alt="Users and Collaborators Icon"/>
@@ -60,6 +60,13 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Chat Bubble -->
+    <div class="chat-bubble position-fixed" style="bottom: 30px; right: 30px; z-index: 1000;">
+        <a href="#" class="btn btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="background-color: #FBB041; width: 60px; height: 60px;">
+            <i class="bi bi-chat-dots-fill text-dark fs-2"></i>
+        </a>
     </div>
 @endsection
 
@@ -84,6 +91,10 @@
     .card-body {
         font-size: 0.7rem;
     }
+
+    .chat-bubble .btn:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
 </style>
 @endpush
-

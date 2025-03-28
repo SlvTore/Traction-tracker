@@ -50,6 +50,17 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard-helps.index');
     })->name('helpIndex');
 
+    Route::get('/help/faq', function () {
+        return view('dashboard-helps.faq');
+    })->name('helpFaq');
+
+    Route::get('/help/features', function () {
+        return view('dashboard-helps.features');
+    })->name('helpFeatures');
+
+    Route::get('/help/collaboration', function () {
+        return view('dashboard-helps.collabs');
+    })->name('helpCollabs');
 
 
 
