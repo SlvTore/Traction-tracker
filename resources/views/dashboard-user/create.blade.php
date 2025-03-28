@@ -93,7 +93,7 @@
         position: fixed;
         bottom: 20px;
         right: 20px;
-        z-index: 1000
+        z-index: 1000;
         background-color: #1E1E50 !important; 
         color: white !important;
         padding: 12px 20px;
