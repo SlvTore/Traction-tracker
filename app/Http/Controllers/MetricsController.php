@@ -22,24 +22,42 @@ class MetricsController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            'selected_metrics' => 'required|array',
+            'selected_metrics.*' => 'string'
+        ]);
+
         $selectedMetrics = $request->input('selected_metrics', []);
-        $metrics = session()->get('metrics', []);
+        $createdCount = 0;
+
+        // Log untuk debugging
+        \Log::info('Creating metrics with data:', ['selected_metrics' => $selectedMetrics]);
 
         foreach ($selectedMetrics as $metricTitle) {
-            Metric::create([
-                'title' => $metricTitle,
-                'date' => now()->toDateString(),
-                'value' => '0',
-                'change_percentage' => '+0',
-                'favorite' => false,
-                'status' => 'warning',
-                'notes' => '',
-            ]);
+            try {
+                Metric::create([
+                    'title' => $metricTitle,
+                    'date' => now()->toDateString(),
+                    'value' => '0',
+                    'trend' => 'neutral',
+                    'change' => '+0',
+                    'status' => 'warning',
+                    'notes' => '',
+                    'change_percentage' => 0,
+                    'created_id' => auth()->id() ?? null
+                ]);
+                $createdCount++;
+            } catch (\Exception $e) {
+                \Log::error('Failed to create metric: ' . $e->getMessage());
+            }
         }
 
-        session()->put('metrics', $metrics);
-
-        return redirect()->route('metrics');
+        if ($createdCount > 0) {
+            return redirect()->route('metrics')->with('success', $createdCount . ' metrics berhasil ditambahkan');
+        } else {
+            return redirect()->route('metrics')->with('error', 'Gagal menambahkan metrics');
+        }
     }
     public function toggleFavorite($id)
     {

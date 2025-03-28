@@ -62,8 +62,8 @@
                                         </div>
                                         <div class="card-body d-flex flex-column">
                                             <p class="card-text mt-0 flex-grow-1">{{ $card['text'] }}</p>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="{{ $card['id'] }}" name="selected_s[]" value="{{ $card['title'] }}" >
+                                            <div class="form-check">                                         <!-- Perubahan pada input checkbox di loop foreach cards -->
+                                                <input type="checkbox" class="form-check-input" id="{{ $card['id'] }}" name="selected_metrics[]" value="{{ $card['title'] }}">
                                                 <label class="form-check-label" for="{{ $card['id'] }}"></label>
                                             </div>
                                         </div>

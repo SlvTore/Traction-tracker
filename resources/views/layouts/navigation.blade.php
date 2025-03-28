@@ -120,7 +120,7 @@
 
                     <!-- Help Centre -->
                         <li class="nav-item">
-                            <x-nav-link :href="route('helpCenter')" :active="request()->routeIs('helpCenter')" class="nav-link text-white px-0">
+                            <x-nav-link :href="route('helpIndex')" :active="request()->routeIs('helpIndex')" class="nav-link text-white px-0">
                                 <i class="bi bi-question-circle mx-2"></i>
                                 {{ __('Help Center') }}
                             </x-nav-link>
