@@ -42,7 +42,14 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Data kosong, akan diisi nanti -->
+                @foreach ($users as $user)
+                    <tr>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->roles->name ?? 'N/A' }}</td>
+                        <td>{{ $user->last_sign_in ? $user->last_sign_in->format('d M Y, H:i') : 'Never' }}</td>
+                    </tr>
+                @endforeach   
             </tbody>
 
             <!-- Add User Button -->

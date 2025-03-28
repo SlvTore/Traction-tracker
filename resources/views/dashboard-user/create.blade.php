@@ -44,10 +44,10 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label">Role</label>
-                        <select name="role" class="form-select">
+                        <select name="role_id" class="form-select">
                             <option value="" disabled selected>Select Role</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role }}">{{ $role }}</option>
+                            @foreach ($roles as $role => $name)
+                                <option value="{{ $role }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -59,7 +59,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Phone number</label>
-                        <input type="text" name="phone-number" class="form-control" required>
+                        <input type="text" name="phone_number" class="form-control" required>
                     </div>
                 </div>
             </div>

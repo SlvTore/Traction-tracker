@@ -18,10 +18,8 @@ class UserController extends Controller
     }
 
     public function create(){
-        // Definisikan daftar roles secara manual
-        $roles = ['Admin', 'Member', 'Startup Owner', 'Mentor'];
-    
-        // Kirim data roles ke view
+        // $roles = ['Admin', 'Member', 'Startup Owner', 'Mentor'];
+        $roles = Role::pluck('name', 'role_id');
         return view('dashboard-user.create', compact('roles'));
     }
 
@@ -31,13 +29,15 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => 'required|exists:roles,role_id',
             'company' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:20|regex:/^[0-9+]+$/',
 
         ]);
 
-        $user = User::create([
+        // dd($request->all());
+
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
