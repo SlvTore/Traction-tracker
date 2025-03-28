@@ -103,7 +103,7 @@
                         </x-nav-link>
                     </li>
                     <li class="nav-item">
-                        <x-nav-link :href="route('user')" :active="request()->routeIs('user')" class="nav-link text-white px-0">
+                        <x-nav-link :href="route('user.index')" :active="request()->routeIs('user')" class="nav-link text-white px-0">
                             <i class="bi bi-people mx-2"></i>
                             {{ __('User') }}
                         </x-nav-link>
