@@ -33,8 +33,21 @@ Route::middleware(['auth'])->group(function () {
     Route::put('metric-records/{record}', [MetricRecordController::class, 'update'])->name('metric-records.update');
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
 
+    // Dashboard-feeds routes
+    Route::get('/dashboard-feeds', function () {
+        return view('dashboard-feeds.index');
+    })->name('dashboard.feeds');
+
+    // Dashboard-users routes with CRUD operations
+    Route::get('/dashboard-users', [UserController::class, 'index'])->name('dashboard.users');
+    Route::get('/dashboard-users/create', [UserController::class, 'create'])->name('dashboard.users.create');
+    Route::post('/dashboard-users', [UserController::class, 'store'])->name('dashboard.users.store');
+    Route::get('/dashboard-users/{user}/edit', [UserController::class, 'edit'])->name('dashboard.users.edit');
+    Route::put('/dashboard-users/{user}', [UserController::class, 'update'])->name('dashboard.users.update');
+    Route::delete('/dashboard-users/{user}', [UserController::class, 'destroy'])->name('dashboard.users.destroy');
+
+    // Legacy routes (keeping for backward compatibility)
     Route::get('/dashboard-user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
