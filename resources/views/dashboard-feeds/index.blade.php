@@ -63,106 +63,47 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="timeline-container">
-                                <div class="timeline">
-                                    <!-- Sample Activity Items -->
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-success">
-                                            <i class="bi bi-graph-up text-white"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-header">
-                                                <h6 class="mb-1">Sales Metric Updated</h6>
-                                                <small class="text-muted">2 hours ago</small>
+                                <div class="timeline" id="activityTimeline">
+                                    @foreach($activities as $activity)
+                                        <div class="timeline-item" data-type="{{ $activity['type'] }}" data-branch="{{ $activity['branch'] ?? '' }}">
+                                            <div class="timeline-marker bg-{{ $activity['color'] }}">
+                                                <i class="bi {{ $activity['icon'] }} text-white"></i>
                                             </div>
-                                            <div class="timeline-body">
-                                                <p class="mb-1"><strong>John Doe</strong> from <span class="badge bg-primary">Branch 1</span> updated the monthly sales metric</p>
-                                                <div class="metric-achievement">
-                                                    <span class="text-success">
-                                                        <i class="bi bi-arrow-up-right"></i> +15.5% from last month
-                                                    </span>
-                                                    <small class="text-muted">| Target achieved: 105%</small>
+                                            <div class="timeline-content">
+                                                <div class="timeline-header">
+                                                    <h6 class="mb-1">{{ $activity['title'] }}</h6>
+                                                    <small class="text-muted">{{ $activity['created_at']->diffForHumans() }}</small>
+                                                </div>
+                                                <div class="timeline-body">
+                                                    <p class="mb-1">
+                                                        <strong>{{ $activity['user'] }}</strong> 
+                                                        @if(isset($activity['branch']))
+                                                            from <span class="badge bg-primary">{{ $activity['branch'] }}</span>
+                                                        @endif
+                                                        {{ $activity['description'] }}
+                                                    </p>
+                                                    @if(isset($activity['value']))
+                                                        <div class="metric-achievement">
+                                                            <span class="text-{{ $activity['color'] }}">
+                                                                <i class="bi bi-arrow-up-right"></i> Value: {{ $activity['value'] }}
+                                                            </span>
+                                                            @if(isset($activity['date']))
+                                                                <small class="text-muted">| Date: {{ \Carbon\Carbon::parse($activity['date'])->format('M d, Y') }}</small>
+                                                            @endif
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endforeach
 
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-info">
-                                            <i class="bi bi-person-plus text-white"></i>
+                                    @if($activities->isEmpty())
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-activity text-muted" style="font-size: 3rem;"></i>
+                                            <h5 class="text-muted mt-3">No Activities Found</h5>
+                                            <p class="text-muted">Start creating metrics and inviting users to see activities here.</p>
                                         </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-header">
-                                                <h6 class="mb-1">New Team Member</h6>
-                                                <small class="text-muted">5 hours ago</small>
-                                            </div>
-                                            <div class="timeline-body">
-                                                <p class="mb-1"><strong>Jane Smith</strong> joined <span class="badge bg-secondary">Branch 2</span> as Sales Manager</p>
-                                                <small class="text-muted">Welcome to the team!</small>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-warning">
-                                            <i class="bi bi-trophy text-white"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-header">
-                                                <h6 class="mb-1">Milestone Achievement</h6>
-                                                <small class="text-muted">1 day ago</small>
-                                            </div>
-                                            <div class="timeline-body">
-                                                <p class="mb-1"><span class="badge bg-success">Main Office</span> reached <strong>10,000 customers</strong> milestone</p>
-                                                <div class="metric-achievement">
-                                                    <span class="text-warning">
-                                                        <i class="bi bi-star-fill"></i> Major milestone achieved!
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-danger">
-                                            <i class="bi bi-exclamation-triangle text-white"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-header">
-                                                <h6 class="mb-1">Metric Alert</h6>
-                                                <small class="text-muted">2 days ago</small>
-                                            </div>
-                                            <div class="timeline-body">
-                                                <p class="mb-1"><span class="badge bg-warning">Branch 1</span> customer satisfaction metric needs attention</p>
-                                                <div class="metric-achievement">
-                                                    <span class="text-danger">
-                                                        <i class="bi bi-arrow-down-right"></i> -5.2% below target
-                                                    </span>
-                                                    <small class="text-muted">| Action required</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="timeline-item">
-                                        <div class="timeline-marker bg-success">
-                                            <i class="bi bi-graph-up text-white"></i>
-                                        </div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-header">
-                                                <h6 class="mb-1">Revenue Milestone</h6>
-                                                <small class="text-muted">3 days ago</small>
-                                            </div>
-                                            <div class="timeline-body">
-                                                <p class="mb-1"><span class="badge bg-primary">Branch 2</span> exceeded monthly revenue target</p>
-                                                <div class="metric-achievement">
-                                                    <span class="text-success">
-                                                        <i class="bi bi-arrow-up-right"></i> +22.8% above target
-                                                    </span>
-                                                    <small class="text-muted">| Outstanding performance!</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -348,12 +289,51 @@
                 const businessFilter = $('#businessFilter').val();
                 const dateRange = $('#dateRangeFilter').val();
                 
-                // In a real implementation, this would make an AJAX call to filter the timeline
-                console.log('Filtering timeline:', {
-                    activityType: activityType,
-                    business: businessFilter,
-                    dateRange: dateRange
+                // Show/hide timeline items based on filters
+                $('.timeline-item').each(function() {
+                    let show = true;
+                    
+                    // Activity type filter
+                    if (activityType && activityType !== 'all') {
+                        const itemType = $(this).data('type');
+                        if (itemType !== activityType) {
+                            show = false;
+                        }
+                    }
+                    
+                    // Business filter
+                    if (businessFilter && businessFilter !== 'all') {
+                        const itemBranch = $(this).data('branch');
+                        if (itemBranch !== businessFilter) {
+                            show = false;
+                        }
+                    }
+                    
+                    // Show or hide the item
+                    if (show) {
+                        $(this).slideDown(300);
+                    } else {
+                        $(this).slideUp(300);
+                    }
                 });
+                
+                // Check if any items are visible
+                setTimeout(() => {
+                    const visibleItems = $('.timeline-item:visible').length;
+                    if (visibleItems === 0) {
+                        if ($('#no-results').length === 0) {
+                            $('#activityTimeline').append(`
+                                <div id="no-results" class="text-center py-5">
+                                    <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+                                    <h5 class="text-muted mt-3">No Activities Match Your Filter</h5>
+                                    <p class="text-muted">Try adjusting your filter criteria.</p>
+                                </div>
+                            `);
+                        }
+                    } else {
+                        $('#no-results').remove();
+                    }
+                }, 350);
             }
         });
     </script>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MetricsController;
 use App\Http\Controllers\MetricRecordController;
+use App\Http\Controllers\FeedsController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -34,9 +35,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('metric-records/{record}', [MetricRecordController::class, 'destroy'])->name('metric-records.destroy');
 
     // Dashboard-feeds routes
-    Route::get('/dashboard-feeds', function () {
-        return view('dashboard-feeds.index');
-    })->name('dashboard.feeds');
+    Route::get('/dashboard-feeds', [FeedsController::class, 'index'])->name('dashboard.feeds');
+    Route::get('/dashboard-feeds/filter', [FeedsController::class, 'filter'])->name('dashboard.feeds.filter');
 
     // Dashboard-users routes with CRUD operations
     Route::get('/dashboard-users', [UserController::class, 'index'])->name('dashboard.users');

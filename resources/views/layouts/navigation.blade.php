@@ -107,9 +107,21 @@
                         </x-nav-link>
                     </li>
                     <li class="nav-item">
+                        <x-nav-link :href="route('dashboard.feeds')" :active="request()->routeIs('dashboard.feeds')" class="nav-link text-white px-0">
+                            <i class="bi bi-activity mx-2"></i>
+                            {{ __('Activity Feeds') }}
+                        </x-nav-link>
+                    </li>
+                    <li class="nav-item">
+                        <x-nav-link :href="route('dashboard.users')" :active="request()->routeIs('dashboard.users*')" class="nav-link text-white px-0">
+                            <i class="bi bi-people-fill mx-2"></i>
+                            {{ __('Users Management') }}
+                        </x-nav-link>
+                    </li>
+                    <li class="nav-item">
                         <x-nav-link :href="route('user.index')" :active="request()->routeIs('user')" class="nav-link text-white px-0">
                             <i class="bi bi-people mx-2"></i>
-                            {{ __('User') }}
+                            {{ __('User (Legacy)') }}
                         </x-nav-link>
                     </li>
                     <li class="nav-item">
