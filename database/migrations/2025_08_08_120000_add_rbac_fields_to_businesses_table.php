@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddRbacFieldsToBusinessesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('businesses', function (Blueprint $table) {
+            $table->string('public_id')->unique()->nullable()->after('business_name');
+            $table->string('invitation_code')->nullable()->after('public_id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('businesses', function (Blueprint $table) {
+            $table->dropColumn(['public_id', 'invitation_code']);
+        });
+    }
+}

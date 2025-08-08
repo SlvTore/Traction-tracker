@@ -12,11 +12,17 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Admin', 'Owner', 'Mentor', 'Member'];
+        $roles = [
+            ['name' => 'business-owner', 'description' => 'Business Owner with full access'],
+            ['name' => 'administrator', 'description' => 'Administrator with management access'],
+            ['name' => 'staff', 'description' => 'Staff with basic access'],
+            ['name' => 'business-investigator', 'description' => 'Business Investigator with view-only access']
+        ];
 
         foreach ($roles as $role) {
             DB::table('roles')->insert([
-                'name' => $role,
+                'name' => $role['name'],
+                'description' => $role['description'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
